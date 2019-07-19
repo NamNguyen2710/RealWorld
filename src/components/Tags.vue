@@ -1,6 +1,5 @@
 <template>
-	<!-- add :href=""-->
-    <a ><span class="tag">{{ tagName }}</span></a>
+    <router-link to="" class="tag">{{ tagName }}</router-link>
 </template>
 
 <script>
@@ -20,6 +19,7 @@
 
 <style scoped>
     .tag {
+		text-decoration: none;
 		border-radius: 3px;
 		padding: 2px;
 		padding-left: 8px;

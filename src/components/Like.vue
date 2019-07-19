@@ -1,6 +1,6 @@
 <template>
-    <button class="components" :class="{'clickedButt':clicked === true}" @click="clicked=!clicked">
-        {{ numb }} <span class="heart" :class="{'clickHrt':clicked === false}"></span>
+    <button class="components" :class="{'clickedButt':favored === true}" @click="favored=!favored">
+        {{ numb }} <span class="heart" :class="{'clickHrt':favored === true}"></span>
     </button>
 </template>
 
@@ -9,7 +9,7 @@
         name: 'like',
         props: {
             numb: Number,
-            clicked: Boolean
+            favored: Boolean
         }
     }
 </script>

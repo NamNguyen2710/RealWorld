@@ -1,14 +1,15 @@
 <template>
-    <ul class="component" style="background-color: white; list-style-type: none; overflow: hidden;">
-		<li style="float: left">
-            <a href="index.html" style="color: rgb(118, 201, 118); ">
-                <b>conduit</b>
-            </a>
-        </li>
-		<li><a href="signup.html" :class="{'black':page === 3}">Sign up</a></li>
-		<li><a href="signin.html" :class="{'black':page === 2}">Sign in</a></li>
-		<li><a href="index.html" :class="{'black':page === 1}">Home</a></li>
-	</ul>
+    <nav>
+        <ul class="component" style="background-color: white; list-style-type: none; overflow: hidden;">
+            <li style="float: left">
+                <router-link to="/" style="color: rgb(118, 201, 118); ">
+                    <b>conduit</b></router-link>
+            </li>
+            <li><router-link to="/signup" :class="{'black':page === 3}">Sign up</router-link></li>
+            <li><router-link to="/signin" :class="{'black':page === 2}">Sign in</router-link></li>
+            <li><router-link to="/" :class="{'black':page === 1}">Home</router-link></li>
+        </ul>
+    </nav>
 </template>
 
 <script>
