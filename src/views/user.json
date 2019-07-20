@@ -1,0 +1,15 @@
+{
+    "profile": [
+    {
+      "username": "jake",
+      "bio": "I work at statefarm",
+      "image": "w3schools.jpg",
+      "following": false
+    },
+    {
+        "username": "NamNguyen",
+        "bio": "I'm testing this project",
+        "image": "image.jpg",
+        "following": false
+    }]
+}

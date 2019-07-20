@@ -14,6 +14,6 @@ export default new Router({
     { path: '/signin', component: Signin },
     { path: '/signup', component: Signup },
     { path: '/article/:id', component: artcPage },
-    { path: '/account/:id', component: account }
+    { path: '/account', component: account }
   ]
 })

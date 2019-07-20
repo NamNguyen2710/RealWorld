@@ -1,7 +1,7 @@
 <template>
 	<div>
-		<router-link to="'/account/' + post.author.username" class="userIco">
-			<img :src="getImgUrl(post.author.image)" style="width: 40px">
+		<router-link to="'/account/' + post.author.username" style="float: left">
+			<img :src="getImgUrl(post.author.image)" style="width: 40px; margin-right: 10px; clip-path: circle()">
 		</router-link>
 		<like :numb="post.favoritesCount" :favored="post.favorited"></like>
 		<router-link to="'/account/' + post.author.username"  style="text-decoration: none; color:rgb(118, 201, 118)">
@@ -48,12 +48,4 @@
 </script>
 
 <style scoped>
-	.userIco {
-		width: 40px;
-		height: 40px;
-		border-radius: 40px;
-		overflow: hidden;
-		margin-right: 10px;
-		float: left;
-	}
 </style>

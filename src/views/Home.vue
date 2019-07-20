@@ -1,8 +1,8 @@
 <template>
     <div>
         <topbar :page="1"></topbar>
-		<h1 class="heading" style="font-size: 40px;padding-top: 30px;"><b>conduit</b></h1>
-		<h3 class="heading" style="padding-bottom: 30px">A place to share your knowledge</h3>
+		<h1 class="heading" style="font-size: 40px"><b>conduit</b></h1>
+		<h3 class="heading">A place to share your knowledge</h3>
 		<br>
 		<table style="width: 77%; float: left;">
             <tr>
@@ -49,6 +49,7 @@
         padding: 15px;
         margin-left: -13%;
         margin-right: -11.9%;
+        padding-top: 30px;
     }
     tr, td {
         border-bottom: 1px solid rgb(167, 164, 164);
