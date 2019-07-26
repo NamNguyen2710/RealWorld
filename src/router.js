@@ -5,6 +5,9 @@ import Signin from './views/SignIn.vue'
 import Signup from './views/SignUp.vue'
 import artcPage from './views/ArticlePage.vue'
 import account from './views/Account.vue'
+import accFav from './views/AccountFav.vue'
+import newArtc from './views/NewArtc.vue'
+import userSet from './views/UserSetting.vue'
 
 Vue.use(Router)
 
@@ -14,6 +17,9 @@ export default new Router({
     { path: '/signin', component: Signin },
     { path: '/signup', component: Signup },
     { path: '/article/:id', component: artcPage },
-    { path: '/account', component: account }
+    { path: '/account/:id', component: account },
+    { path: '/account/:id/favorites', component: accFav },
+    { path: '/editor', component: newArtc},
+    { path: '/settings', component: userSet}
   ]
 })

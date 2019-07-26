@@ -1,6 +1,6 @@
 <template>
-    <button class="components" :class="{'clickedButt':favored === true}" @click="favored=!favored">
-        {{ numb }} <span class="heart" :class="{'clickHrt':favored === true}"></span>
+    <button :class="{'clickedButt':favored === true}" @click="favored=!favored">
+        {{ optText }}{{ numb }} <span class="heart" :class="{'clickHrt':favored === true}"></span>
     </button>
 </template>
 
@@ -9,7 +9,8 @@
         name: 'like',
         props: {
             numb: Number,
-            favored: Boolean
+            favored: Boolean,
+            optText: String
         }
     }
 </script>
@@ -17,13 +18,11 @@
 <style scoped>
     button { 
         border-radius: 3px;
-        padding: 2px;
-        padding-left: 8px;
-        padding-right: 8px;
+        padding: 4px 8px 1px 8px;
         border: 1px solid rgb(118, 201, 118);
         color:rgb(118, 201, 118);
         float: right;
-        background-color: white;
+        background:none;
     }
     button:hover, .clickedButt {
         color: white;
@@ -40,6 +39,7 @@
         height: 10px;
         float: right;
         margin: 4px;
+        top: -2.5px;
     }
     .heart:before, .heart:after {
         position: absolute;

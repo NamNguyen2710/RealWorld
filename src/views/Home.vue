@@ -7,34 +7,61 @@
 		<table style="width: 77%; float: left;">
             <tr>
                 <td style="padding: 0">
-                    <button @click="componentKey += 1"> Global feed </button>
+                    <button :class="{'inFeed':tagOn === false}" @click="getArticles(); tagOn = false"> Global feed </button>
+                    <button class="inFeed" v-if="tagOn === true">{{ tagName }}</button>
                 </td>
             </tr>
-            <printartc :articles="mockDataArticle" :key="componentKey"></printartc>
+            <tr v-for="article in articles" :key="article.id">
+                <td><artc :post="article"></artc></td>
+            </tr>
 		</table>
-		<favtags :tagsLs="favtagslist"></favtags>
+		<favtags :tagsLs="favtagslist" v-on:changeTag=createTag></favtags>
+        <p>{{authHeader()}}</p>
     </div>
 </template>
 
 <script>
     import topbar from '../components/TopBar.vue';
-    import printartc from '../components/PrintArticles.vue';
+    import artc from '../components/Artc.vue';
     import favtags from '../components/FavTags.vue';
-    import mockData from "../test.json";
+    import axios from 'axios';
+    import { authHeader} from '../authHeader.js';
 
     export default {
+        data() {
+            return {
+                articles: [],
+                favtagslist: [],
+                tagOn: false,
+                tagName: ''
+            }
+        },
         name: 'home',
         components: {
             topbar,
-            printartc,
+            artc,
             favtags
         },
-        data() {
-            return {
-                componentKey: 0,
-                mockDataArticle: mockData.article,
-                favtagslist: mockData.favtagsList
+        methods: {
+            getArticles(value){
+                axios.get('http://localhost:3000/api/articles', { params: { tag: value }})
+                .then(response => { this.articles = response.data.articles })
+                .catch(e => { this.error.push(e) })
+            },
+            createTag: function(value) {
+                this.tagOn = true;
+                this.tagName = '#' + value;
+                this.getArticles(value);
+            },
+            authHeader() {
+                return authHeader();
             }
+        },
+        created() {
+            this.getArticles(),
+            axios.get('http://localhost:3000/api/tags')
+                .then(response => { this.favtagslist = response.data.tags })
+                .catch(e => { this.error.push(e) })
         }
     }
 </script>
@@ -52,7 +79,7 @@
         padding-top: 30px;
     }
     tr, td {
-        border-bottom: 1px solid rgb(167, 164, 164);
+        border-bottom: 1px solid rgb(228, 228, 228);
         padding: 30px;
     }
     button {
@@ -60,6 +87,12 @@
         background-color: white; 
         border: hidden; 
         padding: 20px; 
-        margin: 0;
+        margin: -2px;
+    }
+    button:focus {
+        outline: none;
+    }
+    .inFeed {
+        border-bottom: 1px solid rgb(118, 201, 118)
     }
 </style>

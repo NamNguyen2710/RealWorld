@@ -35,5 +35,17 @@
         }
     }],
     "favtagsList" : ["butt", "dragons", "test", "training", "tags", "as", "coffee", "animation", "flowers", 
-        "money", "caramel", "cars", "baby", "happiness", "sushi", "sugar", "clean", "japan", "cookies", "well"]
+        "money", "caramel", "cars", "baby", "happiness", "sushi", "sugar", "clean", "japan", "cookies", "well"],
+    "comments": [{
+      "id": 1,
+      "createdAt": "2016-02-18T03:22:56.637Z",
+      "updatedAt": "2016-02-18T03:22:56.637Z",
+      "body": "It takes a Jacobian",
+      "author": {
+        "username": "nam",
+        "bio": "I work at statefarm",
+        "image": "image.jpg",
+        "following": false
+      }
+    }]
 }

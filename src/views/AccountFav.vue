@@ -4,16 +4,15 @@
         <div class="head">
             <img ref="ava" :src="profile.image" style="clip-path: circle()">
             <h2 style="font-family: tahoma; margin: 0">{{ profile.username }}</h2>
-            <p style="font-size: 14px; color: rgb(238, 238, 238)">{{ profile.bio }}</p>
             <button class="follow">+ Following {{ profile.username }}</button>
             <br><br>
         </div>
         <table style="width: 77%; float: left; margin: 30px">
             <tr>
                 <td>
-                    <router-link :to="`/account/${profile.username}`" class="feed inFeed">
+                    <router-link :to="`/account/${profile.username}`" class="feed">
                         My article</router-link>
-                    <router-link :to="`/account/${profile.username}/favorites`" class="feed">Favorite articles</router-link>
+                    <router-link :to="`/account/${profile.username}/favorites`" class="feed inFeed">Favorite articles</router-link>
                 </td>
             </tr>
             <tr v-for="article in articles" :key="article.id">
@@ -27,7 +26,6 @@
     import topbar from '../components/TopBar.vue';
     import artc from '../components/Artc.vue';
     import axios from 'axios';
-
     export default {
         name: 'account',
         components: {
@@ -44,7 +42,7 @@
         },
         methods: {
             getArticles() {
-                axios.get(`http://localhost:3000/api/articles`, { params: { author: this.profile.username }})
+                axios.get(`http://localhost:3000/api/articles`, { params: { favorited: this.profile.username }})
                     .then(response => { this.articles = response.data.articles })
                     .catch(e => { this.error.push(e) })
             }
@@ -67,13 +65,6 @@
 </script>
 
 <style scoped>
-    .setWidth{
-        width: 100px;
-    }
-    .setHeight {
-        height: 100px;
-    }
-
     .follow {
         padding: 5px; 
         border-radius:3px;

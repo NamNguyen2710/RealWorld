@@ -1,11 +1,8 @@
 <template>
-    <span class="box">
-		Popular Tags:
-		<br>
-        <nav>
-			<tags v-for="tag in tagsLs" :key="tag.id" :tagName="tag"></tags>
-        </nav>
-	</span>
+    <div class="box">
+		<p style="font-family: sans-serif; margin: 5px; font-size: 14px">Popular Tags</p>
+		<tags v-for="tag in tagsLs" :key="tag.id" :tagName="tag" v-on:changeTag="returnTag"></tags>
+	</div>
 </template>
 
 <script>
@@ -18,6 +15,11 @@
         },
         components: {
             tags
+        },
+        methods: {
+            returnTag(value) {
+                this.$emit('changeTag', value)
+            }
         }
     }
 </script>
@@ -29,7 +31,7 @@
         padding-left: 8px;
         padding-right: 8px;
         width: 20%; 
-        background-color: rgb(196, 195, 195); 
-        color: black;
+        background-color: rgb(196, 195, 195);
+        float:right;
     }
 </style>

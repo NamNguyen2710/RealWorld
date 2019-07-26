@@ -4,21 +4,47 @@
         <p class="heading">Sign up</p>
         <router-link to="/signin" class="link">Have an account?</router-link>
         <form style="text-align: center">
-            <input type="text" class="inputbox" name="user" placeholder="Username"><br>
-            <input type="email" class="inputbox" name="email" placeholder="Email"><br>
-            <input type="text" class="inputbox" name="pass" placeholder="Password"><br>
-            <input type="submit" class="button" value="Sign up">
+            <input type="text" class="inputbox" placeholder="Username" v-model="user"><br>
+            <input type="email" class="inputbox" placeholder="Email" v-model="email"><br>
+            <input type="text" class="inputbox" placeholder="Password" v-model="pass"><br>
+            <button @click="signUp()"></button>
         </form>
     </div>
 </template>
 
 <script>
     import topbar from '../components/TopBar.vue';
+    import axios from 'axios';
+    import router from '../router.js';
 
     export default {
         name: 'signup',
         components: {
             topbar
+        },
+        data() {
+            return {
+                user:'',
+                email: '',
+                pass: ''
+            }
+        },
+        methods: {
+            signUp() {
+                axios.post('http://localhost:3000/api/users', { 
+                    "user":{
+                        "username": this.user,
+                        "email": this.email,
+                        "password": this.pass
+                    }
+                })
+                .then(response => { 
+                    const parsed = JSON.stringify(response.data.user);
+                    localStorage.setItem('user', this.parsed);
+                    router.push('/'); 
+                })
+                .catch(e => this.error.push(e));
+            }
         }
     }
 </script>
@@ -49,5 +75,15 @@
         margin: 15px;
         padding: 10px;
         border-radius: 7px;
+    }
+    button {
+        width: 100px; 
+        padding: 10px; 
+        position: relative; 
+        left: 160px; 
+        background: rgb(118, 201, 118);
+        color: white; 
+        border-radius: 7px; 
+        border: hidden;
     }
 </style>

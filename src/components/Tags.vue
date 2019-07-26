@@ -1,25 +1,24 @@
 <template>
-    <router-link to="" class="tag">{{ tagName }}</router-link>
+    <button to="" class="tag" @click="returnTag">
+		{{ tagName }}</button>
 </template>
 
 <script>
     export default {
         name: 'tags',
         props: {
-            tagUrl: String,
             tagName: String
-        },
-        methods: {
-            getUserUrl(tagUrl){
-				return require('' + tagUrl)
+		},
+		methods: {
+			returnTag() {
+				this.$emit('changeTag', this.tagName);
 			}
-        }
+		}
     }
 </script>
 
 <style scoped>
     .tag {
-		text-decoration: none;
 		border-radius: 3px;
 		padding: 2px;
 		padding-left: 8px;
@@ -28,8 +27,12 @@
 		color: white;
 		background-color: rgb(82, 80, 80);
 		margin:2px;
+		border: hidden;
 	}
 	.tag:hover {
 		background-color: rgb(48, 47, 47);
+	}
+	.tag:focus {
+		outline: none;
 	}
 </style>
