@@ -13,9 +13,9 @@ Vue.use(Router)
 
 export default new Router({
   routes: [
-    { path: '/', component: Home },
-    { path: '/signin', component: Signin },
-    { path: '/signup', component: Signup },
+    { path: '/', component: Home, name: 'home' },
+    { path: '/signin', component: Signin, name: 'signin' },
+    { path: '/signup', component: Signup, name: 'signup' },
     { path: '/article/:id', component: artcPage },
     { path: '/account/:id', component: account },
     { path: '/account/:id/favorites', component: accFav },

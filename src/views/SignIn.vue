@@ -3,9 +3,9 @@
         <topbar :page="2"></topbar>
         <p class="heading">Sign in</p>
         <router-link to="/signup" class="link">Need an account?</router-link>
-        <form style="text-align: center">
+        <form style="text-align: center" v-on:submit.prevent>
            <input type="email" class="inputbox" placeholder="Email" v-model="user"><br>
-           <input type="text" class="inputbox" placeholder="Password" v-model="pass"><br>
+           <input type="text" class="inputbox" placeholder="Password" v-model="pass" v-on:keyup.enter="login()"><br>
            <button @click="login()">Sign in</button>
         </form>
     </div>
@@ -15,6 +15,7 @@
     import topbar from '../components/TopBar.vue';
     import axios from 'axios';
     import router from '../router.js';
+    import Cookies from 'js-cookie';
 
     export default {
         name: 'signin',
@@ -29,16 +30,15 @@
         },
         methods: {
             login() {
-                axios.post(`http://localhost:3000/api/users/login`, {
+                axios({url: `http://localhost:3000/api/users/login`, method: 'post', data: {
                     "user": {
                         "email": this.user,
                         "password": this.pass
                     }
-                })
-                .then(response => { 
-                    const parsed = JSON.stringify(response.data.user);
-                    localStorage.setItem('user', this.parsed);
-                    router.push('/');
+                }})
+                .then(response => {
+                    Cookies.set('user', response.data.user);
+                    router.push({name: 'home'});
                 })
                 .catch(e => this.error.push(e));
             }
@@ -72,6 +72,7 @@
         margin: 15px;
         padding: 10px;
         border-radius: 7px;
+        border: 1px solid rgb(196, 196, 196);
     }
     .inputbox:focus {
         outline-width: 0;

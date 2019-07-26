@@ -42,9 +42,19 @@
         },
         methods: {
             getArticles() {
-                axios.get(`http://localhost:3000/api/articles`, { params: { favorited: this.profile.username }})
+                axios.get(`http://localhost:3000/api/articles`, { params: { favorited: this.id }})
                     .then(response => { this.articles = response.data.articles })
                     .catch(e => { this.error.push(e) })
+            }
+        },
+        watch: {
+            '$route' (to, from) {
+                axios.get(`http://localhost:3000/api/profiles/${to.params.id}`)
+                    .then(response => { this.profile = response.data.profile })
+                    .catch(e => { this.error.push(e) }),
+                axios.get('http://localhost:3000/api/articles', { params: { favorited: to.params.id }})
+                        .then(response => { this.articles = response.data.articles })
+                        .catch(e => { this.error.push(e) })
             }
         },
         created() {

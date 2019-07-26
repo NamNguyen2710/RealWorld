@@ -1,16 +1,16 @@
 <template>
     <div>
-        <topbar :page="5"></topbar> 
-        <p>{{ authHeader() }}</p>
+        <topbar :page="5"></topbar>
         <h1 class="heading">Your Settings</h1>
-        <form style="margin: 0 auto; margin-top: 40px">
+        <form style="margin: 40px auto; width: 40%" v-on:submit.prevent>
             <input type="text" class="inputbox" style="height: 30px" placeholder="URL of profile picture" v-model="image">
             <input type="text" class="inputbox" placeholder="Username" v-model="username">
             <textarea class="inputbox" style="height: 100px" placeholder="Short bio about you" v-model="bio"></textarea>
-            <input type="email" class="inputbox" placeholder="Email">
-            <input type="text" class="inputbox" placeholder="New Password">
+            <input type="email" class="inputbox" placeholder="Email" v-model="email">
+            <input type="text" class="inputbox" placeholder="New Password" v-model="pass">
             <button class="submit" @click="updCurUser()">Update Settings</button>
-            <button class="" @click="logout()">Or click here to log out</button>
+            <hr style="clear: both; width: 80%; margin: 0 auto">
+            <button class="logout" @click="logout()">Or click here to log out</button>
         </form>
     </div>
 </template>
@@ -19,6 +19,8 @@
     import topbar from '../components/TopBar.vue';
     import axios from 'axios';
     import { authHeader } from '../authHeader';
+    import Cookies from 'js-cookie';
+    import router from 'vue-router';
 
     export default {
         name: 'setting',
@@ -27,33 +29,40 @@
         },
         data() {
             return {
-                user: {
-                    "email": "",
-                    "token": "",
-                    "username": "",
-                    "bio": "",
-                    "image": ""
-                }
+                email: "",
+                pass: "",
+                username: "",
+                bio: "",
+                image: ""
             }
         },
         methods: {
             updCurUser() {
-                axios({url: 'http://localhost:3000/api/user', method: 'put', header: authHeader(), data: { user: this.user } })
-                    .then(response => { 
-                        const parsed = JSON.stringify(response.data.user);
-                        localStorage.setItem('user', this.parsed);
+                const updData = {'bio': this.bio, 'image': this.image};
+                if (this.email) { updData['email'] = this.email };
+                if (this.pass) { updData['password'] = this.pass };
+                if (this.username) { updData['username'] = this.username };
+                axios({url: 'http://localhost:3000/api/user', method: 'put', headers: authHeader(), data: { "user": updData }})
+                    .then(response => {
+                        Cookies.set('user', response.data.user);
                         router.push(`/account/${response.data.user.username}`); 
                     })
-                    .catch(e => console.log(e));
+                    .catch(e => console.log(JSON.stringify(e)));
             },
             logout() {
-                localStorage.removeItem('user');
-            },
-            authHeader() { authHeader()}
+                Cookies.remove('user');
+                router.push('/');
+            }
         },
         created() {
             axios({url: 'http://localhost:3000/api/user', method: 'get', headers: authHeader()})
-                .then(response => { this.user = response.data.user })
+                .then(response => { 
+                    const user = response.data.user;
+                    this.email = user.email;
+                    this.username = user.username;
+                    this.bio = user.bio;
+                    this.image = user.image;
+                })
                 .catch(e => console.log(JSON.stringify(e)))
         }
     }
@@ -65,17 +74,17 @@
         font-family: tahoma; 
         text-align: center; 
         margin: 20px;
+        font-weight: normal;
     }
 
     .inputbox {
-        width: 60%;
+        width: 95%;
         margin: 8px;
         padding: 10px;
         border: 1px solid rgb(189, 188, 188);
         border-radius: 4px;
         display: block;
         position: relative;
-        left: 20%;
         font-family: arial; 
     }
     .inputbox:focus {
@@ -83,12 +92,24 @@
     }
 
     .submit { 
-        padding: 15px; 
-        position: relative; 
-        left: 74%; 
+        padding: 15px;
+        float: right;
         background: rgb(118, 201, 118);
         color: white; 
         border-radius: 7px; 
         border: hidden;
+        margin-bottom: 10px;
+    }
+    .submit:focus {
+        outline-width: 0;
+    }
+
+    .logout {
+        padding: 7px;
+        background: none;
+        color: rgb(185, 0, 0); 
+        border-radius: 7px; 
+        border: 1px solid rgb(185, 0, 0);
+        margin: 20px;
     }
 </style>

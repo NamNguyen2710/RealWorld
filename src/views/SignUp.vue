@@ -3,11 +3,11 @@
         <topbar :page="3"></topbar>
         <p class="heading">Sign up</p>
         <router-link to="/signin" class="link">Have an account?</router-link>
-        <form style="text-align: center">
+        <form style="text-align: center" v-on:submit.prevent>
             <input type="text" class="inputbox" placeholder="Username" v-model="user"><br>
             <input type="email" class="inputbox" placeholder="Email" v-model="email"><br>
             <input type="text" class="inputbox" placeholder="Password" v-model="pass"><br>
-            <button @click="signUp()"></button>
+            <button @click="signUp()">Sign up</button>
         </form>
     </div>
 </template>
@@ -16,6 +16,7 @@
     import topbar from '../components/TopBar.vue';
     import axios from 'axios';
     import router from '../router.js';
+    import Cookies from 'js-cookie';
 
     export default {
         name: 'signup',
@@ -39,11 +40,10 @@
                     }
                 })
                 .then(response => { 
-                    const parsed = JSON.stringify(response.data.user);
-                    localStorage.setItem('user', this.parsed);
+                    Cookies.set('user', response.data.user);
                     router.push('/'); 
                 })
-                .catch(e => this.error.push(e));
+                .catch(e => console.log(JSON.stringify(e)));
             }
         }
     }
@@ -72,10 +72,15 @@
     .inputbox {
         width: 400px;
         height: 25px;
-        margin: 15px;
+        margin: 8px;
         padding: 10px;
         border-radius: 7px;
+        border: 1px solid rgb(196, 196, 196);
     }
+    .inputbox:focus {
+        outline-width: 0;
+    }
+
     button {
         width: 100px; 
         padding: 10px; 
