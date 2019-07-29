@@ -1,7 +1,7 @@
 <template>
     <span>
         <router-link :to="`/account/${post.author.username}`" style="float: left">
-            <img :src="post.author.image" style="width: 40px; margin-right: 10px; clip-path: circle(); margin-top: -5px">
+            <img ref="ava" :src="post.author.image" style="margin-right: 10px; clip-path: circle();">
         </router-link>
         <router-link :to="`/account/${post.author.username}`" style="text-decoration: none; color: white;" :class='{"name":page === false}'>
             {{ post.author.username }}
@@ -21,6 +21,14 @@
             getDate(date) {
 				return new Date(date).toDateString()
 			}
+        },
+        mounted () {
+            this.$nextTick(function () {
+                if (this.$refs.ava.width >= this.$refs.ava.height)
+                    this.$refs.ava.style.height = '30px'
+                else
+                    this.$refs.ava.style.width = '30px'
+            })
         }
     }
 </script>

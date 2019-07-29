@@ -5,8 +5,11 @@ import Signin from './views/SignIn.vue'
 import Signup from './views/SignUp.vue'
 import artcPage from './views/ArticlePage.vue'
 import account from './views/Account.vue'
-import accFav from './views/AccountFav.vue'
-import newArtc from './views/NewArtc.vue'
+import accArtc from './components/AccountArticle.vue'
+import accFav from './components/AccountFav.vue'
+import editor from './views/Editor.vue'
+import newArtc from './components/NewArtc.vue'
+import editArtc from './components/EditArticle.vue'
 import userSet from './views/UserSetting.vue'
 
 Vue.use(Router)
@@ -17,9 +20,18 @@ export default new Router({
     { path: '/signin', component: Signin },
     { path: '/signup', component: Signup },
     { path: '/article/:id', component: artcPage },
-    { path: '/account/:id', component: account },
-    { path: '/account/:id/favorites', component: accFav },
-    { path: '/editor', component: newArtc},
+    { path: '/account/:id', component: account,
+      children: [
+        { path: '', component: accArtc},
+        { path: 'favorites', component: accFav}
+      ]
+    },
+    { path: '/editor', component: editor,
+      children: [
+        { path: '', component: newArtc },
+        { path: ':id', component: editArtc}
+      ]
+    },
     { path: '/settings', component: userSet}
   ]
 })

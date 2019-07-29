@@ -10,6 +10,11 @@
   }
 </script>
 
-
 <style>
+  button:focus {
+    outline-width: 0;
+  }
+  input:focus {
+    outline-width: 0;
+  }
 </style>

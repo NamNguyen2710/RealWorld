@@ -43,7 +43,7 @@
                     Cookies.set('user', response.data.user);
                     router.push('/'); 
                 })
-                .catch(e => console.log(JSON.stringify(e)));
+                .catch(e => { console.log(JSON.stringify(e)) });
             }
         }
     }
@@ -77,9 +77,6 @@
         border-radius: 7px;
         border: 1px solid rgb(196, 196, 196);
     }
-    .inputbox:focus {
-        outline-width: 0;
-    }
 
     button {
         width: 100px; 
@@ -90,5 +87,8 @@
         color: white; 
         border-radius: 7px; 
         border: hidden;
+    }
+    button:hover {
+        background-color: rgb(83, 168, 83);
     }
 </style>

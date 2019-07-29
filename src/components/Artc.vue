@@ -1,6 +1,6 @@
 <template>
 	<div>
-		<like :numb="post.favoritesCount" :favored="post.favorited"></like>
+		<like :numb="post.favoritesCount" :favored="post.favorited" v-on:favorited=updArtc></like>
 		<ufa :post="post" :page="false"></ufa>
 
 		<h3 style="margin-bottom: 0; font-family: sans-serif">{{ post.title }}</h3>
@@ -19,6 +19,8 @@
 	import like from "./Like.vue";
 	import tags from './Tags.vue';
 	import ufa from "./UserForArtc.vue";
+	import axios from 'axios';
+	import { authHeader } from '../authHeader';
 
     export default {
 		name: 'artc',
@@ -29,6 +31,18 @@
 			like, 
 			tags,
 			ufa
+		},
+		methods: {
+			updArtc(value) {
+				if (value)
+					axios({url: `http://localhost:3000/api/articles/${this.post.slug}/favorite`, method: 'delete', headers: authHeader()})
+						.then(response => {this.post = response.data.article})
+						.catch(e => console.log(e))
+				else
+					axios({url: `http://localhost:3000/api/articles/${this.post.slug}/favorite`, method: 'post', headers: authHeader()})
+						.then(response => {this.post = response.data.article})
+						.catch(e => console.log(JSON.stringify(e)))
+			}
 		}
 	}
 </script>

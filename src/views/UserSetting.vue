@@ -2,7 +2,7 @@
     <div>
         <topbar :page="5"></topbar>
         <h1 class="heading">Your Settings</h1>
-        <form style="margin: 40px auto; width: 40%" v-on:submit.prevent>
+        <form style="margin: 40px auto; width: 40%" v-on:submit.prevent v-on:keyup.enter="updCurUser()">
             <input type="text" class="inputbox" style="height: 30px" placeholder="URL of profile picture" v-model="image">
             <input type="text" class="inputbox" placeholder="Username" v-model="username">
             <textarea class="inputbox" style="height: 100px" placeholder="Short bio about you" v-model="bio"></textarea>
@@ -20,7 +20,7 @@
     import axios from 'axios';
     import { authHeader } from '../authHeader';
     import Cookies from 'js-cookie';
-    import router from 'vue-router';
+    import router from '../router.js';
 
     export default {
         name: 'setting',
@@ -39,15 +39,16 @@
         methods: {
             updCurUser() {
                 const updData = {'bio': this.bio, 'image': this.image};
-                if (this.email) { updData['email'] = this.email };
-                if (this.pass) { updData['password'] = this.pass };
-                if (this.username) { updData['username'] = this.username };
+                if (this.email) { updData['email'] = this.email }
+                if (this.pass) { updData['password'] = this.pass }
+                if (this.username) { updData['username'] = this.username }
+
                 axios({url: 'http://localhost:3000/api/user', method: 'put', headers: authHeader(), data: { "user": updData }})
                     .then(response => {
                         Cookies.set('user', response.data.user);
                         router.push(`/account/${response.data.user.username}`); 
                     })
-                    .catch(e => console.log(JSON.stringify(e)));
+                    .catch(e => console.log(e));
             },
             logout() {
                 Cookies.remove('user');
@@ -87,9 +88,6 @@
         position: relative;
         font-family: arial; 
     }
-    .inputbox:focus {
-        outline-width: 0;
-    }
 
     .submit { 
         padding: 15px;
@@ -100,16 +98,20 @@
         border: hidden;
         margin-bottom: 10px;
     }
-    .submit:focus {
-        outline-width: 0;
+    .submit:hover {
+        background-color: rgb(83, 168, 83);
     }
 
     .logout {
-        padding: 7px;
+        padding: 7px 10px;
         background: none;
-        color: rgb(185, 0, 0); 
+        color: rgb(179, 91, 91); 
         border-radius: 7px; 
-        border: 1px solid rgb(185, 0, 0);
+        border: 1px solid rgb(179, 91, 91);
         margin: 20px;
+    }
+    .logout:hover {
+        background-color: rgb(179, 91, 91);
+        color: white;
     }
 </style>

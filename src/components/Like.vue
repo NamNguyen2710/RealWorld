@@ -1,5 +1,5 @@
 <template>
-    <button :class="{'clickedButt':favored === true}" @click="favored=!favored">
+    <button :class="{'clickedButt':favored === true}" @click="favorited()">
         {{ optText }}{{ numb }} <span class="heart" :class="{'clickHrt':favored === true}"></span>
     </button>
 </template>
@@ -11,6 +11,11 @@
             numb: Number,
             favored: Boolean,
             optText: String
+        },
+        methods: {
+            favorited() {
+                this.$emit('favorited', this.favored)
+            }
         }
     }
 </script>
@@ -28,7 +33,7 @@
         color: white;
         background-color: rgb(118, 201, 118);
     }
-    button:hover .heart:before, button:hover .heart:after, .clickHrt:after, .clickHrt:before{
+    button:hover .heart:before, button:hover .heart:after, .clickedButt .heart:after, .clickedButt .heart:before{
         background: white;
     }
     
@@ -54,7 +59,7 @@
             transform: rotate(-45deg);
         -webkit-transform-origin: 0 100%;
             transform-origin: 0 100%;
-}
+    }
     .heart:after {
         left: 0;
         -webkit-transform: rotate(45deg);

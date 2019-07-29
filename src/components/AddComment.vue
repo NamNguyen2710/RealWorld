@@ -2,20 +2,42 @@
     <table align="center">
         <tr style="padding: 0">
             <td style="padding: 0; height: 100px">
-                <textarea></textarea>
+                <textarea placeholder="Write a comment..." v-model="comment"></textarea>
             </td>
         </tr>
         <tr>
             <td class="author">
-                <button>Post comment</button>
+                <button @click="postArticle()">Post comment</button>
             </td>
         </tr>
     </table>
 </template>
 
 <script>
+    import axios from 'axios';
+    import { authHeader } from '../authHeader.js';
+
     export default {
-        name: 'addcomm'
+        name: 'addcomm',
+        props: {
+            id: ""
+        },
+        data() {
+            return {
+                comment: ""
+            }
+        },
+        methods: {
+            postArticle() {
+                axios({url: `http://localhost:3000/api/articles/${this.id}/comments`, method: 'post',
+                        headers: authHeader(), data: { "comment": {"body": this.comment} }})
+                    .then(response => { 
+                        this.$emit('addComment');
+                        this.comment = "";
+                    })
+                    .catch(e => console.log(JSON.stringify(e)))
+            }
+        }
     }
 </script>
 
@@ -43,12 +65,13 @@
     }
 
     textarea {
-        width: 100%;
-        height: 100%;
+        width: calc(100% - 20px);
+        min-height: 100px;
         border: none;
         margin: 0;
-        padding: 0;
+        padding: 10px;
         position: relative;
         top: 4px;
+        resize: vertical;
     }
 </style>

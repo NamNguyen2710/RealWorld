@@ -7,16 +7,22 @@
 		<table style="width: 77%; float: left;">
             <tr>
                 <td style="padding: 0">
-                    <button :class="{'inFeed':tagOn === false}" @click="getArticles(); tagOn = false"> Global feed </button>
+                    <button :class="{'inFeed':tagOn === false}" @click="curPage = 1; getArticles(); tagOn = false"> Global feed </button>
                     <button class="inFeed" v-if="tagOn === true">{{ tagName }}</button>
                 </td>
             </tr>
             <tr v-for="article in articles" :key="article.id">
                 <td><artc :post="article"></artc></td>
             </tr>
+            <tr>
+                <td class="margin-top: 10px">
+                    <button :class="{'inPage':(num + 1) === curPage}" class="page" v-for="num in pages" :key="num" @click="curPage = num + 1; getArticles()">
+                        {{ num + 1 }}
+                    </button>
+                </td>
+            </tr>
 		</table>
 		<favtags :tagsLs="favtagslist" v-on:changeTag=createTag></favtags>
-        <p>{{authHeader()}}</p>
     </div>
 </template>
 
@@ -33,7 +39,9 @@
                 articles: [],
                 favtagslist: [],
                 tagOn: false,
-                tagName: ''
+                tagName: '',
+                curPage: 1,
+                pages: []
             }
         },
         name: 'home',
@@ -44,8 +52,13 @@
         },
         methods: {
             getArticles(value){
-                axios.get('http://localhost:3000/api/articles', { params: { tag: value }})
-                .then(response => { this.articles = response.data.articles })
+                axios.get('http://localhost:3000/api/articles', 
+                    { params: { tag: value, limit: 10, offset: this.curPage*10,
+                    headers: authHeader() }})
+                .then(response => { 
+                    this.articles = response.data.articles;
+                    this.pages = [ ...Array(Math.ceil(response.data.articlesCount / 10) - 1).keys() ];
+                })
                 .catch(e => { this.error.push(e) })
             },
             createTag: function(value) {
@@ -94,5 +107,21 @@
     }
     .inFeed {
         border-bottom: 1px solid rgb(118, 201, 118)
+    }
+
+    .page {
+        border: 1px solid rgb(190, 190, 190);
+        font-size: 14px;
+        padding: 13px;
+    }
+    .page:hover {
+        background-color: rgb(221, 221, 221);
+        color: rgb(57, 117, 57);
+        text-decoration: underline;
+    }
+    .inPage {
+        background: rgb(118, 201, 118) !important;
+        color: white !important;
+        text-decoration: underline;
     }
 </style>

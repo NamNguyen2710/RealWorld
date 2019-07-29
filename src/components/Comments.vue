@@ -8,6 +8,7 @@
         <tr>
             <td class="author">
                 <ufa :post="comm" :page="false" ></ufa>
+                <button @click="deleteComm()">X</button>
             </td>
         </tr>
     </table>
@@ -15,14 +16,24 @@
 
 <script>
     import ufa from '../components/UserForArtc.vue';
+    import axios from 'axios';
+    import { authHeader } from '../authHeader.js';
 
     export default {
         name: 'comment',
         props: {
-            comm: {}
+            comm: {},
+            id: ''
         },
         components: {
             ufa
+        },
+        methods: {
+            deleteComm() {
+                axios({url: `http://localhost:3000/api/articles/${this.id}/comments/${this.comm.id}`, method: 'delete', headers: authHeader()})
+                    .then( this.$emit('updComm') )
+                    .catch(e => console.log(e))
+            }
         }
     }
 </script>
@@ -32,11 +43,22 @@
         width: 40%; 
         border: 1px solid rgb(206, 206, 206);
         border-radius: 3px;
-        margin-top: 10px;
+        margin: 5px auto;
     }
     .author {
         border-top: 1px solid rgb(206, 206, 206); 
         padding: 10px 10px 0 10px; 
         background: rgb(236, 236, 236);
+    }
+
+    button {
+        border: 0;
+        background: none;
+        font-weight: bold;
+        color: gray;
+        float: right;
+    }
+    button:hover {
+        color: black;
     }
 </style>
