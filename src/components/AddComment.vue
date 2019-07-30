@@ -1,5 +1,5 @@
 <template>
-    <table align="center">
+    <table>
         <tr style="padding: 0">
             <td style="padding: 0; height: 100px">
                 <textarea placeholder="Write a comment..." v-model="comment"></textarea>
@@ -29,13 +29,14 @@
         },
         methods: {
             postArticle() {
-                axios({url: `http://localhost:3000/api/articles/${this.id}/comments`, method: 'post',
-                        headers: authHeader(), data: { "comment": {"body": this.comment} }})
-                    .then(response => { 
-                        this.$emit('addComment');
-                        this.comment = "";
-                    })
-                    .catch(e => console.log(JSON.stringify(e)))
+                if (this.comment)
+                    axios({url: `http://localhost:3000/api/articles/${this.id}/comments`, method: 'post',
+                            headers: authHeader(), data: { "comment": {"body": this.comment} }})
+                        .then(response => { 
+                            this.$emit('addComment');
+                            this.comment = "";
+                        })
+                        .catch(e => console.log(JSON.stringify(e)))
             }
         }
     }
@@ -43,11 +44,12 @@
 
 <style scoped>
     table {
-        width: 40%; 
+        width: 100%;
         border: 1px solid rgb(206, 206, 206);
         border-radius: 3px;
         padding: 0;
-        margin-top: 50px;
+        margin: 0 auto;
+        margin-top: 30px;
     }
     .author {
         border-top: 1px solid rgb(206, 206, 206); 
@@ -62,6 +64,9 @@
         float: right;
         padding: 5px;
         border-radius: 3px;
+    }
+    button:hover {
+        background: rgb(120, 185, 120);
     }
 
     textarea {

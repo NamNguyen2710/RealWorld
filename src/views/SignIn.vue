@@ -5,7 +5,7 @@
         <router-link to="/signup" class="link">Need an account?</router-link>
         <form style="text-align: center" v-on:submit.prevent>
            <input type="email" class="inputbox" placeholder="Email" v-model="user"><br>
-           <input type="text" class="inputbox" placeholder="Password" v-model="pass" v-on:keyup.enter="login()"><br>
+           <input type="password" class="inputbox" placeholder="Password" v-model="pass" v-on:keyup.enter="login()"><br>
            <button @click="login()">Sign in</button>
         </form>
     </div>

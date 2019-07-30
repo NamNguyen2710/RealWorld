@@ -4,12 +4,12 @@
         <div class="head">
             <img ref="ava" :src="profile.image" style="clip-path: circle()">
             <h2 style="font-family: tahoma; margin: 0">{{ profile.username }}</h2>
-            <p style="font-size: 14px; color: rgb(238, 238, 238)">{{ profile.bio }}</p>
+            <p style="font-size: 16px; color: rgb(160, 160, 160)">{{ profile.bio }}</p>
             <router-link to="/settings" class="follow" v-if="checkLogin()">Edit Profile Settings</router-link>
             <button class="follow" v-else @click="follow">
-                    <span v-if="!profile.following">+ Following </span>
-                    <span v-else>+ Unfollowing </span>
-                    {{ profile.username }}
+                <span v-if="!profile.following">+ Following </span>
+                <span v-else>+ Unfollowing </span>
+                {{ profile.username }}
             </button>
             <br><br>
         </div>

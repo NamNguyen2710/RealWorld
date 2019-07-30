@@ -7,7 +7,7 @@
             <input type="text" class="inputbox" placeholder="Username" v-model="username">
             <textarea class="inputbox" style="height: 100px" placeholder="Short bio about you" v-model="bio"></textarea>
             <input type="email" class="inputbox" placeholder="Email" v-model="email">
-            <input type="text" class="inputbox" placeholder="New Password" v-model="pass">
+            <input type="password" class="inputbox" placeholder="New Password" v-model="pass">
             <button class="submit" @click="updCurUser()">Update Settings</button>
             <hr style="clear: both; width: 80%; margin: 0 auto">
             <button class="logout" @click="logout()">Or click here to log out</button>

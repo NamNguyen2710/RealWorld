@@ -3,32 +3,52 @@
         <topbar :page="0"></topbar>
         <div class="head">
             <h1 style="color: white; font-family: sans-serif">{{ post.title }}</h1>
-            <ufa :post="post" :page="true"></ufa>
-            <span v-if="checkLogin()">
-                <button class="follow" @click="updArtc">Edit article</button>
-                <button class="delete">Delete article</button>
-            </span>
-            <span v-else >
-                <button class="follow">+ Follow {{ post.author.username }}</button>
-                <like :numb="post.favoritesCount" :favored="post.favorited" :optText="'Favorited Article '" style="float: none"></like>
-            </span>
+            <table>
+                <tr>
+                    <td rowspan="2" style="min-width: 150px">
+                        <ufa :post="post" :page="true"></ufa>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <span v-if="checkLogin()">
+                            <button class="follow" @click="updArtc">Edit article</button>
+                            <button class="delete" @click="deleteArtc">Delete article</button>
+                        </span>
+                        <span v-else >
+                            <button class="follow">+ Follow {{ post.author.username }}</button>
+                            <like :numb="post.favoritesCount" :favored="post.favorited" :optText="'Favorited Article '" style="float: none"></like>
+                        </span>
+                    </td>
+                </tr>
+            </table>
         </div>
         <p style="padding: 20px; font-size: 18px">{{ post.body }}</p><br>
         <tags v-for="tag in post.tagList" :tagName="tag" :key="tag.id" style="float: none"></tags>
         <hr>
-        <div style="margin: 10px auto; width: 500px; padding: 10px">
-            <ufa :post="post" :page="false"></ufa>
-            <span v-if="checkLogin()">
-                <button class="follow" @click="updArtc">Edit article</button>
-                <button class="delete" @click="deleteArtc">Delete article</button>
-            </span>
-            <span v-else >
-                <button class="follow">+ Follow {{ post.author.username }}</button>
-                <like :numb="post.favoritesCount" :favored="post.favorited" :optText="'Favorited Article '" style="float: none"></like>
-            </span>
+        <table align="center">
+            <tr>
+                <td rowspan="2" style="min-width: 150px">
+                    <ufa :post="post" :page="false"></ufa>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <span v-if="checkLogin()">
+                        <button class="follow" @click="updArtc">Edit article</button>
+                        <button class="delete" @click="deleteArtc">Delete article</button>
+                    </span>
+                    <span v-else >
+                        <button class="follow">+ Follow {{ post.author.username }}</button>
+                        <like :numb="post.favoritesCount" :favored="post.favorited" :optText="'Favorited Article '" style="float: none"></like>
+                    </span>
+                </td>
+            </tr>
+        </table>
+        <div style="width: 40%; margin: 10px auto">
+            <addcomm :id="id" v-on:addComment=getComm></addcomm>
+            <comment v-for="comm in comments" :comm="comm" :key="comm.id" :id="id" v-on:updComm=getComm></comment>
         </div>
-        <addcomm :id="id" v-on:addComment=getComm></addcomm>
-        <comment v-for="comm in comments" :comm="comm" :key="comm.id" :id="id" v-on:updComm=getComm></comment>
     </div>
 </template>
 
@@ -72,7 +92,7 @@
                 axios({url: `http://localhost:3000/api/articles/${this.id}`, method: 'delete', headers: authHeader()})
             },
             checkLogin() {
-                if (authHeader() && this.post.author.username === JSON.parse(Cookies.get('user')).username)
+                if (authHeader() && (this.post.author.username == JSON.parse(Cookies.get('user')).username))
                     return true
                 else
                     return false

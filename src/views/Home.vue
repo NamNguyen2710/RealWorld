@@ -7,14 +7,18 @@
 		<table style="width: 77%; float: left;">
             <tr>
                 <td style="padding: 0">
-                    <button :class="{'inFeed':tagOn === false}" @click="curPage = 1; getArticles(); tagOn = false"> Global feed </button>
-                    <button class="inFeed" v-if="tagOn === true">{{ tagName }}</button>
+                    <button v-if="authHeader()" :class="{'inFeed': curFeed == 1}" @click="curPage = 1; curFeed = 1; getArticles()">My Feed</button>
+                    <button :class="{'inFeed':curFeed == 2}" @click="curPage = 1; curFeed = 2; getArticles()"> Global feed </button>
+                    <button class="inFeed" v-if="curFeed == 3" @click="getArticles(tagName)">{{ tagName }}</button>
                 </td>
             </tr>
             <tr v-for="article in articles" :key="article.id">
                 <td><artc :post="article"></artc></td>
             </tr>
-            <tr>
+            <tr v-if="articles.length === 0">
+                <td>No article is here... yet</td>
+            </tr>
+            <tr v-else>
                 <td class="margin-top: 10px">
                     <button :class="{'inPage':(num + 1) === curPage}" class="page" v-for="num in pages" :key="num" @click="curPage = num + 1; getArticles()">
                         {{ num + 1 }}
@@ -38,7 +42,7 @@
             return {
                 articles: [],
                 favtagslist: [],
-                tagOn: false,
+                curFeed: 2,
                 tagName: '',
                 curPage: 1,
                 pages: []
@@ -52,17 +56,27 @@
         },
         methods: {
             getArticles(value){
-                axios.get('http://localhost:3000/api/articles', 
-                    { params: { tag: value, limit: 10, offset: this.curPage*10,
-                    headers: authHeader() }})
-                .then(response => { 
-                    this.articles = response.data.articles;
-                    this.pages = [ ...Array(Math.ceil(response.data.articlesCount / 10) - 1).keys() ];
-                })
-                .catch(e => { this.error.push(e) })
+                if (this.curFeed == 1)
+                    axios({url: 'http://localhost:3000/api/articles/feed', method: 'get',
+                        params: { limit: 10, offset: (this.curPage-1)*10},
+                        headers: authHeader() })
+                    .then(response => { 
+                        this.articles = response.data.articles;
+                        this.pages = [ ...Array(Math.ceil(response.data.articlesCount / 10)).keys() ];
+                    })
+                    .catch(e => { this.error.push(e) })
+                else
+                    axios({url: 'http://localhost:3000/api/articles', method: 'get',
+                        params: { tag: value, limit: 10, offset: (this.curPage-1)*10,
+                        headers: authHeader() }})
+                    .then(response => { 
+                        this.articles = response.data.articles;
+                        this.pages = [ ...Array(Math.ceil(response.data.articlesCount / 10)).keys() ];
+                    })
+                    .catch(e => { this.error.push(e) })
             },
             createTag: function(value) {
-                this.tagOn = true;
+                this.curFeed = 3;
                 this.tagName = '#' + value;
                 this.getArticles(value);
             },

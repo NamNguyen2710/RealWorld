@@ -6,7 +6,7 @@
         <router-link :to="`/account/${post.author.username}`" style="text-decoration: none; color: white;" :class='{"name":page === false}'>
             {{ post.author.username }}
         </router-link><br>
-        <span style="color: rgb(201, 201, 201)" :class="{'date':page ===false}">{{ getDate(post.createdAt) }}</span>
+        <span style="color: rgb(201, 201, 201)" :class="{'date':page == false}">{{ getDate(post.createdAt) }}</span>
     </span>
 </template>
 
@@ -36,7 +36,7 @@
 <style scoped>
     
     .date {
-        color: black !important;
+        color: rgb(150, 150, 150) !important;
     }
     
     .name {

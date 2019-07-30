@@ -6,7 +6,7 @@
         <form style="text-align: center" v-on:submit.prevent>
             <input type="text" class="inputbox" placeholder="Username" v-model="user"><br>
             <input type="email" class="inputbox" placeholder="Email" v-model="email"><br>
-            <input type="text" class="inputbox" placeholder="Password" v-model="pass"><br>
+            <input type="password" class="inputbox" placeholder="Password" v-model="pass"><br>
             <button @click="signUp()">Sign up</button>
         </form>
     </div>
