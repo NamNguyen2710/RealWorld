@@ -20,7 +20,7 @@
     export default {
         name: 'addcomm',
         props: {
-            id: ""
+            id: {}
         },
         data() {
             return {
@@ -32,9 +32,9 @@
                 if (this.comment)
                     axios({url: `http://localhost:3000/api/articles/${this.id}/comments`, method: 'post',
                             headers: authHeader(), data: { "comment": {"body": this.comment} }})
-                        .then(response => { 
-                            this.$emit('addComment');
-                            this.comment = "";
+                        .then( response => {
+                            this.$emit('addComment'),
+                            this.comment = ""
                         })
                         .catch(e => console.log(JSON.stringify(e)))
             }

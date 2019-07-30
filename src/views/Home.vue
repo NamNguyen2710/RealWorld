@@ -7,7 +7,7 @@
 		<table style="width: 77%; float: left;">
             <tr>
                 <td style="padding: 0">
-                    <button v-if="authHeader()" :class="{'inFeed': curFeed == 1}" @click="curPage = 1; curFeed = 1; getArticles()">My Feed</button>
+                    <button v-if="logCheck" :class="{'inFeed': curFeed == 1}" @click="curPage = 1; curFeed = 1; getArticles()">My Feed</button>
                     <button :class="{'inFeed':curFeed == 2}" @click="curPage = 1; curFeed = 2; getArticles()"> Global feed </button>
                     <button class="inFeed" v-if="curFeed == 3" @click="getArticles(tagName)">{{ tagName }}</button>
                 </td>
@@ -35,6 +35,7 @@
     import artc from '../components/Artc.vue';
     import favtags from '../components/FavTags.vue';
     import axios from 'axios';
+    import Cookies from 'js-cookie';
     import { authHeader} from '../authHeader.js';
 
     export default {
@@ -45,7 +46,8 @@
                 curFeed: 2,
                 tagName: '',
                 curPage: 1,
-                pages: []
+                pages: [],
+                logCheck: Cookies.get('user')
             }
         },
         name: 'home',
@@ -66,22 +68,28 @@
                     })
                     .catch(e => { this.error.push(e) })
                 else
-                    axios({url: 'http://localhost:3000/api/articles', method: 'get',
-                        params: { tag: value, limit: 10, offset: (this.curPage-1)*10,
-                        headers: authHeader() }})
-                    .then(response => { 
-                        this.articles = response.data.articles;
-                        this.pages = [ ...Array(Math.ceil(response.data.articlesCount / 10)).keys() ];
-                    })
-                    .catch(e => { this.error.push(e) })
+                    if (this.logCheck)
+                        axios({url: 'http://localhost:3000/api/articles', method: 'get',
+                            params: { tag: value, limit: 10, offset: (this.curPage-1)*10,
+                            headers: authHeader() }})
+                        .then(response => { 
+                            this.articles = response.data.articles;
+                            this.pages = [ ...Array(Math.ceil(response.data.articlesCount / 10)).keys() ];
+                        })
+                        .catch(e => { this.error.push(e) })
+                    else
+                        axios({url: 'http://localhost:3000/api/articles', method: 'get',
+                            params: { tag: value, limit: 10, offset: (this.curPage-1)*10 }})
+                        .then(response => { 
+                            this.articles = response.data.articles;
+                            this.pages = [ ...Array(Math.ceil(response.data.articlesCount / 10)).keys() ];
+                        })
+                        .catch(e => { this.error.push(e) })
             },
             createTag: function(value) {
                 this.curFeed = 3;
                 this.tagName = '#' + value;
                 this.getArticles(value);
-            },
-            authHeader() {
-                return authHeader();
             }
         },
         created() {

@@ -3,6 +3,9 @@
         <topbar :page="2"></topbar>
         <p class="heading">Sign in</p>
         <router-link to="/signup" class="link">Need an account?</router-link>
+        <ul class="error">
+            <li v-for="error in errors" :key="error"> {{error}} </li>
+        </ul>
         <form style="text-align: center" v-on:submit.prevent>
            <input type="email" class="inputbox" placeholder="Email" v-model="user"><br>
            <input type="password" class="inputbox" placeholder="Password" v-model="pass" v-on:keyup.enter="login()"><br>
@@ -25,22 +28,29 @@
         data() {
             return {
                 user: '',
-                pass: ''
+                pass: '',
+                errors: []
             }
         },
         methods: {
             login() {
-                axios({url: `http://localhost:3000/api/users/login`, method: 'post', data: {
-                    "user": {
-                        "email": this.user,
-                        "password": this.pass
-                    }
-                }})
-                .then(response => {
-                    Cookies.set('user', response.data.user);
-                    router.push('/');
-                })
-                .catch(e => this.error.push(e));
+                this.errors = []
+                if (this.user && this.pass)
+                    axios({url: `http://localhost:3000/api/users/login`, method: 'post', data: {
+                        "user": {
+                            "email": this.user,
+                            "password": this.pass
+                        }
+                    }})
+                    .then(response => {
+                        Cookies.set('user', response.data.user);
+                        router.push('/');
+                    })
+                    .catch(e => this.error.push(e))
+                else {
+                    if (!this.user) this.errors.push("Email cannot be empty")
+                    if (!this.pass) this.errors.push("Password cannot be empty")
+                }
             }
         }
     }
@@ -64,6 +74,14 @@
     .link:hover {
         text-decoration: underline; 
         color: rgb(100, 170, 100);
+    }
+
+    .error {
+        width: 300px;
+        color: rgb(180, 20, 20);
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        margin: 0 auto;
+        margin-top: 10px;
     }
 
     .inputbox {

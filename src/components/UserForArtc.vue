@@ -1,7 +1,7 @@
 <template>
     <span>
-        <router-link :to="`/account/${post.author.username}`" style="float: left">
-            <img ref="ava" :src="post.author.image" style="margin-right: 10px; clip-path: circle();">
+        <router-link :to="`/account/${post.author.username}`" style="width: 30px; overflow: hidden; display: inline-flex; justify-content: center; float: left; margin-right: 10px">
+            <img ref="ava" :src="post.author.image" style="clip-path: circle();">
         </router-link>
         <router-link :to="`/account/${post.author.username}`" style="text-decoration: none; color: white;" :class='{"name":page === false}'>
             {{ post.author.username }}

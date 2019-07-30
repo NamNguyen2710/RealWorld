@@ -16,8 +16,13 @@
                             <button class="delete" @click="deleteArtc">Delete article</button>
                         </span>
                         <span v-else >
-                            <button class="follow">+ Follow {{ post.author.username }}</button>
-                            <like :numb="post.favoritesCount" :favored="post.favorited" :optText="'Favorited Article '" style="float: none"></like>
+                            <button class="follow" @click="follow">
+                                <span v-if="!post.author.following">+ Following </span>
+                                <span v-else>+ Unfollowing </span>
+                                {{ post.author.username }}
+                            </button>
+                            <like :numb="post.favoritesCount" :favored="post.favorited" :optText="'Favorited Article '" 
+                                style="float: none" v-on:favorited=updArtc></like>
                         </span>
                     </td>
                 </tr>
@@ -39,8 +44,13 @@
                         <button class="delete" @click="deleteArtc">Delete article</button>
                     </span>
                     <span v-else >
-                        <button class="follow">+ Follow {{ post.author.username }}</button>
-                        <like :numb="post.favoritesCount" :favored="post.favorited" :optText="'Favorited Article '" style="float: none"></like>
+                        <button class="follow" @click="follow">
+                            <span v-if="!post.author.following">+ Following </span>
+                            <span v-else>+ Unfollowing </span>
+                            {{ post.author.username }}
+                        </button>
+                        <like :numb="post.favoritesCount" :favored="post.favorited" :optText="'Favorited Article '" 
+                            style="float: none" v-on:favorited=updArtc></like>
                     </span>
                 </td>
             </tr>
@@ -70,7 +80,8 @@
             return {
                 id: this.$route.params.id,
                 post: {},
-                comments: []
+                comments: [],
+                logCheck: Cookies.get('user')
             }
         },
         components: {
@@ -82,17 +93,16 @@
             tags
         },
         methods: {
-            authHeader() {
-                return authHeader();
-            },
             updArtc() {
                 router.push(`/editor/${this.id}`)
             },
             deleteArtc() {
                 axios({url: `http://localhost:3000/api/articles/${this.id}`, method: 'delete', headers: authHeader()})
+                    .then( router.push('/') )
+                    .catch(e => console.log(e))
             },
             checkLogin() {
-                if (authHeader() && (this.post.author.username == JSON.parse(Cookies.get('user')).username))
+                if (this.logCheck && (this.post.author.username == JSON.parse(this.logCheck).username))
                     return true
                 else
                     return false
@@ -101,12 +111,40 @@
                 axios.get(`http://localhost:3000/api/articles/${this.id}/comments`)
                     .then(response => { this.comments = response.data.comments })
                     .catch(e => this.error.push(e))
-            }
+            },
+            follow() {
+                if (this.post.author.following)
+                    axios({url: `http://localhost:3000/api/profiles/${this.post.author.username}/follow`, method: 'delete', headers: authHeader()})
+                        .then(response => { this.getArticle() })
+                        .catch(e => console.log(JSON.stringify(e)))
+                else
+                    axios({url: `http://localhost:3000/api/profiles/${this.post.author.username}/follow`, method: 'post', headers: authHeader()})
+                        .then(response => { this.getArticle() })
+                        .catch(e => console.log(e))
+            },
+            getArticle() {
+                if (this.logCheck)
+                    axios({url: `http://localhost:3000/api/articles/${this.id}`, method: 'get', headers: authHeader()})
+                        .then(response => { this.post = response.data.article })
+                        .catch(e => this.error.push(e))
+                else
+                    axios.get(`http://localhost:3000/api/articles/${this.id}`)
+                        .then(response => { this.post = response.data.article })
+                        .catch(e => this.error.push(e))
+            },
+            updArtc(value) {
+				if (value)
+					axios({url: `http://localhost:3000/api/articles/${this.post.slug}/favorite`, method: 'delete', headers: authHeader()})
+						.then(response => {this.post = response.data.article})
+						.catch(e => console.log(e))
+				else
+					axios({url: `http://localhost:3000/api/articles/${this.post.slug}/favorite`, method: 'post', headers: authHeader()})
+						.then(response => {this.post = response.data.article})
+						.catch(e => console.log(JSON.stringify(e)))
+			}
         },
         created() {
-            axios.get(`http://localhost:3000/api/articles/${this.id}`)
-                .then(response => { this.post = response.data.article })
-                .catch(e => this.error.push(e));
+            this.getArticle()
             this.getComm()
         }
     }

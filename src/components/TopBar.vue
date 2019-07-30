@@ -5,8 +5,8 @@
                 <router-link to="/" style="color: rgb(118, 201, 118); ">
                     <b>conduit</b></router-link>
             </li>
-            <template v-if="authHeader()">
-                <li><router-link :to="`/account/${user.username}`" :class="{'black':page === 6}">{{ user.username }}</router-link></li>
+            <template v-if="user">
+                <li><router-link :to="`/account/${JSON.parse(user).username}`" :class="{'black':page === 6}">{{ JSON.parse(user).username }}</router-link></li>
                 <li><router-link to="/settings" :class="{'black':page === 5}">Settings</router-link></li>
                 <li><router-link to="/editor" :class="{'black':page === 4}">New Article</router-link></li>
             </template>
@@ -20,7 +20,6 @@
 </template>
 
 <script>
-    import { authHeader } from '../authHeader.js';
     import Cookies from 'js-cookie'
 
     export default {
@@ -30,12 +29,7 @@
         },
         data() {
             return {
-                user: JSON.parse(Cookies.get('user'))
-            }
-        },
-        methods: {
-            authHeader() {
-                return authHeader();
+                user: Cookies.get('user')
             }
         }
     }

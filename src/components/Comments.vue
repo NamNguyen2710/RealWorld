@@ -24,21 +24,22 @@
         name: 'comment',
         props: {
             comm: {},
-            id: ''
+            id: {},
+            logCheck: Cookies.get('user')
         },
         components: {
             ufa
         },
         methods: {
             checkLogin() {
-                if (authHeader() && this.comm.author.username == JSON.parse(Cookies.get('user')).username)
+                if (this.logCheck && this.comm.author.username == JSON.parse(this.logCheck).username)
                     return true
                 else
                     return false
             },
             deleteComm() {
                 axios({url: `http://localhost:3000/api/articles/${this.id}/comments/${this.comm.id}`, method: 'delete', headers: authHeader()})
-                    .then( this.$emit('updComm') )
+                    .then( resposnse => { this.$emit('updComm') })
                     .catch(e => console.log(e))
             }
         }

@@ -1,6 +1,9 @@
 <template>
     <div>
-        <form style="margin: 40px auto; width: 60%" v-on:submit.prevent>
+        <ul class="error">
+            <li v-for="error in errors" :key="error">{{ error }}</li>
+        </ul>
+        <form style="margin: 30px auto; width: 60%" v-on:submit.prevent>
             <input type="text" class="inputbox" style="height: 30px" placeholder="Article Title" v-model="title">
             <input type="text" class="inputbox" placeholder="What's this article about?" v-model="descript">
             <textarea class="inputbox" style="height: 100px" placeholder="Write your article (in markdown)" v-model="content"></textarea>
@@ -33,25 +36,33 @@
                 content: '',
                 taglist: [],
                 tag: '',
-                id: this.$route.params.id
+                id: this.$route.params.id,
+                errors: []
             }
         },
         methods: {
             updArtc() {
-                axios({url: `http://localhost:3000/api/articles/${this.id}`, method: 'put', headers: authHeader(),
-                    data: {
-                        "article": {
-                            "title": this.title,
-                            "description": this.descript,
-                            "body": this.content
+                if (this.title && this.descript && this.content)
+                    axios({url: `http://localhost:3000/api/articles/${this.id}`, method: 'put', headers: authHeader(),
+                        data: {
+                            "article": {
+                                "title": this.title,
+                                "description": this.descript,
+                                "body": this.content
+                            }
                         }
-                    }
-                })
-                .then(response => { 
-                    if (response.data)
-                        router.push(`/article/${response.data.article.slug}`) 
-                })
-                .catch(e => console.log(JSON.stringify(e)))
+                    })
+                    .then(response => { 
+                        if (response.data)
+                            router.push(`/article/${response.data.article.slug}`) 
+                    })
+                    .catch(e => console.log(JSON.stringify(e)))
+                else {
+                    this.errors = []
+                    if (!this.title) { this.errors.push("Title cannot be empty") }
+                    if (!this.descript) { this.errors.push("Description cannot be empty") }
+                    if (!this.body) { this.errors.push("Body cannot be empty")}
+                }
             }
         },
         created() {
@@ -76,6 +87,13 @@
         border-radius: 4px;
         display: block;
         font-family: arial; 
+    }
+
+    .error {
+        color: rgb(167, 45, 45);
+        font-family: Verdana, Geneva, Tahoma, sans-serif;
+        margin: 10px auto;
+        width: 400px;
     }
 
     button { 

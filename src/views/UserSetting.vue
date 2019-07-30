@@ -2,7 +2,10 @@
     <div>
         <topbar :page="5"></topbar>
         <h1 class="heading">Your Settings</h1>
-        <form style="margin: 40px auto; width: 40%" v-on:submit.prevent v-on:keyup.enter="updCurUser()">
+        <ul class="error">
+            <li v-for="error in errors" :key="error">{{ error }}</li>
+        </ul>
+        <form style="margin: 30px auto; width: 40%" v-on:submit.prevent v-on:keyup.enter="updCurUser()">
             <input type="text" class="inputbox" style="height: 30px" placeholder="URL of profile picture" v-model="image">
             <input type="text" class="inputbox" placeholder="Username" v-model="username">
             <textarea class="inputbox" style="height: 100px" placeholder="Short bio about you" v-model="bio"></textarea>
@@ -33,22 +36,31 @@
                 pass: "",
                 username: "",
                 bio: "",
-                image: ""
+                image: "",
+                errors: []
             }
         },
         methods: {
             updCurUser() {
-                const updData = {'bio': this.bio, 'image': this.image};
-                if (this.email) { updData['email'] = this.email }
-                if (this.pass) { updData['password'] = this.pass }
-                if (this.username) { updData['username'] = this.username }
-
-                axios({url: 'http://localhost:3000/api/user', method: 'put', headers: authHeader(), data: { "user": updData }})
-                    .then(response => {
-                        Cookies.set('user', response.data.user);
-                        router.push(`/account/${response.data.user.username}`); 
-                    })
-                    .catch(e => console.log(e));
+                if (!(this.email && this.username && (this.username.length <= 20))) {
+                    this.errors = []
+                    if (!this.email) { this.errors.push("Email cannot be empty") }
+                    if (this.username.length > 20) { this.errors.push("Username cannot be over 20 characters") }
+                    if (!this.username) { this.errors.push("Username cannot be empty") }
+                }
+                else {
+                    const updData = {'bio': this.bio, 
+                                    'image': this.image,
+                                    'email': this.email,
+                                    'username': this.username};
+                    if (this.pass) { updData['password'] = this.pass }
+                    axios({url: 'http://localhost:3000/api/user', method: 'put', headers: authHeader(), data: { "user": updData }})
+                        .then(response => {
+                            Cookies.set('user', response.data.user);
+                            router.push(`/account/${response.data.user.username}`); 
+                        })
+                        .catch(e => console.log(e))
+                }
             },
             logout() {
                 Cookies.remove('user');
@@ -76,6 +88,13 @@
         text-align: center; 
         margin: 20px;
         font-weight: normal;
+    }
+
+    .error {
+        color: rgb(167, 45, 45);
+        font-family: Verdana, Geneva, Tahoma, sans-serif;
+        margin: 10px auto;
+        width: 400px;
     }
 
     .inputbox {

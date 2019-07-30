@@ -1,5 +1,8 @@
 <template>
     <div>
+        <ul class="error">
+            <li v-for="error in errors" :key="error">{{ error }}</li>
+        </ul>
         <form style="margin: 0 auto; width: 60%; margin-top: 40px" v-on:submit.prevent>
             <input type="text" class="inputbox" style="height: 30px" placeholder="Article Title" v-model="title">
             <input type="text" class="inputbox" placeholder="What's this article about?" v-model="descript">
@@ -32,26 +35,34 @@
                 descript: '',
                 content: '',
                 taglist: [],
-                tag: ''
+                tag: '',
+                errors: []
             }
         },
         methods: {
             postArticle() {
-                axios({method: 'post', url: 'http://localhost:3000/api/articles', headers: authHeader(),
-                    data: {
-                        "article": {
-                            "title": this.title,
-                            "description": this.descript,
-                            "body": this.content,
-                            "tagList": this.taglist
+                if (this.title && this.descript && this.content)
+                    axios({method: 'post', url: 'http://localhost:3000/api/articles', headers: authHeader(),
+                        data: {
+                            "article": {
+                                "title": this.title,
+                                "description": this.descript,
+                                "body": this.content,
+                                "tagList": this.taglist
+                            }
                         }
-                    }
-                })
-                .then(response => { 
-                    if (response.data)
-                        router.push(`/article/${response.data.article.slug}`) 
-                })
-                .catch(e => console.log(JSON.stringify(e)));   
+                    })
+                    .then(response => { 
+                        if (response.data)
+                            router.push(`/article/${response.data.article.slug}`) 
+                    })
+                    .catch(e => console.log(JSON.stringify(e)))
+                else {
+                    this.errors = []
+                    if (!this.title) { this.errors.push("Title cannot be empty") }
+                    if (!this.descript) { this.errors.push("Description cannot be empty") }
+                    if (!this.body) { this.errors.push("Body cannot be empty")}
+                }
             },
             addTag() {
                 this.taglist.push(this.tag);

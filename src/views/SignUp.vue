@@ -3,6 +3,9 @@
         <topbar :page="3"></topbar>
         <p class="heading">Sign up</p>
         <router-link to="/signin" class="link">Have an account?</router-link>
+        <ul class="error">
+            <li v-for="error in errors" :key="error">{{ error }}</li>
+        </ul>
         <form style="text-align: center" v-on:submit.prevent>
             <input type="text" class="inputbox" placeholder="Username" v-model="user"><br>
             <input type="email" class="inputbox" placeholder="Email" v-model="email"><br>
@@ -27,23 +30,32 @@
             return {
                 user:'',
                 email: '',
-                pass: ''
+                pass: '',
+                errors: []
             }
         },
         methods: {
             signUp() {
-                axios.post('http://localhost:3000/api/users', { 
-                    "user":{
-                        "username": this.user,
-                        "email": this.email,
-                        "password": this.pass
-                    }
-                })
-                .then(response => { 
-                    Cookies.set('user', response.data.user);
-                    router.push('/'); 
-                })
-                .catch(e => { console.log(JSON.stringify(e)) });
+                this.errors = []
+                if (this.user && this.email && this.pass && (this.user.length <= 20))
+                    axios.post('http://localhost:3000/api/users', { 
+                        "user":{
+                            "username": this.user,
+                            "email": this.email,
+                            "password": this.pass
+                        }
+                    })
+                    .then(response => { 
+                        Cookies.set('user', response.data.user);
+                        router.push('/'); 
+                    })
+                    .catch(e => { console.log(JSON.stringify(e)) })
+                else {
+                    if (!this.user) this.errors.push("Username cannot be empty")
+                    if (!this.email) this.errors.push("Email cannot be empty")
+                    if (!this.pass) this.errors.push("Password cannot be empty")
+                    if (this.user.length > 20) this.errors.push("Username cannot be over 20 characters")
+                }
             }
         }
     }
@@ -67,6 +79,13 @@
     .link:hover {
         text-decoration: underline; 
         color: rgb(100, 170, 100);
+    }
+
+    .error {
+        color: rgb(167, 45, 45);
+        font-family: Verdana, Geneva, Tahoma, sans-serif;
+        margin: 10px auto;
+        width: 400px;
     }
 
     .inputbox {

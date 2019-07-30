@@ -31,17 +31,23 @@
         data() {
             return {
                 profile: {},
-                id: this.$route.params.id
+                id: this.$route.params.id,
+                logCheck: Cookies.get('user')
             }
         },
         created() {
-            axios({url: `http://localhost:3000/api/profiles/${this.id}`, method: 'get', headers: authHeader()})
-                .then(response => { this.profile = response.data.profile })
-                .catch(e => { this.error.push(e) })
+            if (this.logCheck)
+                axios({url: `http://localhost:3000/api/profiles/${this.id}`, method: 'get', headers: authHeader()})
+                    .then(response => { this.profile = response.data.profile })
+                    .catch(e => { this.error.push(e) })
+            else 
+                axios.get(`http://localhost:3000/api/profiles/${this.id}`)
+                    .then(response => { this.profile = response.data.profile })
+                    .catch(e => { this.error.push(e) })
         },
         methods: {
             checkLogin() {
-                if (authHeader() && this.profile.username === JSON.parse(Cookies.get('user')).username)
+                if (this.logCheck && this.profile.username == JSON.parse(this.logCheck).username)
                     return true
                 else
                     return false
