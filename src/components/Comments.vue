@@ -7,7 +7,7 @@
         </tr>
         <tr>
             <td class="author">
-                <ufa :post="comm" :page="false" ></ufa>
+                <utag :post="comm" :page="false" ></utag>
                 <button v-if="checkLogin()" @click="deleteComm()">X</button>
             </td>
         </tr>
@@ -15,7 +15,7 @@
 </template>
 
 <script>
-    import ufa from '../components/UserForArtc.vue';
+    import utag from '../components/UserTag.vue';
     import axios from 'axios';
     import { authHeader } from '../authHeader.js';
     import Cookies from 'js-cookie';
@@ -28,7 +28,7 @@
             logCheck: Cookies.get('user')
         },
         components: {
-            ufa
+            utag
         },
         methods: {
             checkLogin() {

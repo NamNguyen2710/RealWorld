@@ -1,49 +1,112 @@
 <template>
-    <span>
-        <router-link :to="`/account/${post.author.username}`" style="width: 30px; overflow: hidden; display: inline-flex; justify-content: center; float: left; margin-right: 10px">
-            <img ref="ava" :src="post.author.image" style="clip-path: circle();">
-        </router-link>
-        <router-link :to="`/account/${post.author.username}`" style="text-decoration: none; color: white;" :class='{"name":page === false}'>
-            {{ post.author.username }}
-        </router-link><br>
-        <span style="color: rgb(201, 201, 201)" :class="{'date':page == false}">{{ getDate(post.createdAt) }}</span>
-    </span>
+    <table>
+        <tr>
+            <td rowspan="2" style="min-width: 150px">
+                <utag :author="post.author" :date="post.createdAt" :page="page"></utag>
+            </td>
+            <td><span v-if="checkLogin()">
+                    <router-link class="follow" :to="`/editor/${post.slug}`">Edit article</router-link>
+                    <button class="delete" @click="deleteArtc">Delete article</button>
+                </span>
+                <span v-else >
+                    <button class="follow" @click="follow">
+                        <span v-if="!post.author.following">+ Following </span>
+                        <span v-else>+ Unfollowing </span>
+                        {{ post.author.username }}
+                    </button>
+                    <like :numb="post.favoritesCount" :favored="post.favorited" :optText="'Favorited Article '" 
+                        style="float: none" v-on:favorited=favArtc></like>
+            </span></td>
+        </tr>
+    </table>
 </template>
 
 <script>
+    import like from '../components/Like.vue';
+    import utag from '../components/UserTag.vue';
+    import axios from 'axios';
+    import router from '../router.js';
+    import { authHeader } from '../authHeader.js';
+    import Cookies from 'js-cookie';
+
     export default {
-        name: 'userforarct',
+        name: 'ufa',
         props: {
-            post: {},
-            page: Boolean
+            page: Boolean,
+            post: {}
+        },
+        components: {
+            like,
+            utag
+        },
+        data() {
+            return {
+                logCheck: Cookies.get('user')
+            }
         },
         methods: {
-            getDate(date) {
-				return new Date(date).toDateString()
-			}
-        },
-        mounted () {
-            this.$nextTick(function () {
-                if (this.$refs.ava.width >= this.$refs.ava.height)
-                    this.$refs.ava.style.height = '30px'
+            checkLogin() {
+                if (this.logCheck && (this.post.author.username == JSON.parse(this.logCheck).username))
+                    return true
                 else
-                    this.$refs.ava.style.width = '30px'
-            })
+                    return false
+            },
+            deleteArtc() {
+                axios({url: `http://localhost:3000/api/articles/${this.post.slug}`, method: 'delete', headers: authHeader()})
+                    .then( router.push('/') )
+                    .catch(e => console.log(e))
+            },
+            favArtc(value) {
+				if (value)
+					axios({url: `http://localhost:3000/api/articles/${this.post.slug}/favorite`, method: 'delete', headers: authHeader()})
+						.then(response => {this.post = response.data.article})
+						.catch(e => console.log(e))
+				else
+					axios({url: `http://localhost:3000/api/articles/${this.post.slug}/favorite`, method: 'post', headers: authHeader()})
+						.then(response => {this.post = response.data.article})
+						.catch(e => console.log(JSON.stringify(e)))
+			},
+            follow() {
+                if (this.post.author.following)
+                    axios({url: `http://localhost:3000/api/profiles/${this.post.author.username}/follow`, method: 'delete', headers: authHeader()})
+                        .then(response => { this.post.author.following = false })
+                        .catch(e => console.log(JSON.stringify(e)))
+                else
+                    axios({url: `http://localhost:3000/api/profiles/${this.post.author.username}/follow`, method: 'post', headers: authHeader()})
+                        .then(response => { this.post.author.following = true })
+                        .catch(e => console.log(e))
+            },
         }
     }
 </script>
 
 <style scoped>
-    
-    .date {
-        color: rgb(150, 150, 150) !important;
+    .follow {
+        padding: 4px; 
+        border-radius:3px;
+        border: 1px solid rgb(167, 167, 167);
+        background: none;
+        color: rgb(167, 167, 167);
+        margin-left: 20px;
+        margin-right: 7px;
+        font: 14px Arial;
+        text-decoration: none;
     }
-    
-    .name {
-        color:rgb(118, 201, 118) !important;
+    .follow:hover {
+        background: rgb(167, 167, 167);
+        color: white;
     }
-    .name:hover {
-        color: rgb(0, 100, 0) !important;
-        text-decoration: underline !important;
+
+    .delete {
+        padding: 4px;
+        background: none;
+        color: rgb(179, 91, 91); 
+        border-radius: 3px; 
+        border: 1px solid rgb(179, 91, 91);
+        font-size: 14px;
+    }
+    .delete:hover {
+        background-color: rgb(179, 91, 91);
+        color: white;
     }
 </style>

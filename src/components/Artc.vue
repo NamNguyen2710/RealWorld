@@ -1,7 +1,7 @@
 <template>
 	<div>
 		<like :numb="post.favoritesCount" :favored="post.favorited" v-on:favorited=updArtc></like>
-		<ufa :post="post" :page="false"></ufa>
+		<utag :author="post.author" :date="post.createdAt" :page="false"></utag>
 
 		<h3 style="margin-bottom: 0; font-family: sans-serif">{{ post.title }}</h3>
 		<p style="margin: 0; color:gray">{{ post.description }}</p>
@@ -18,7 +18,7 @@
 <script>
 	import like from "./Like.vue";
 	import tags from './Tags.vue';
-	import ufa from "./UserForArtc.vue";
+	import utag from "./UserTag.vue";
 	import axios from 'axios';
 	import { authHeader } from '../authHeader';
 
@@ -30,7 +30,7 @@
 		components: {
 			like, 
 			tags,
-			ufa
+			utag
 		},
 		methods: {
 			updArtc(value) {
