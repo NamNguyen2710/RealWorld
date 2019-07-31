@@ -8,7 +8,7 @@
         <p style="padding: 20px; font-size: 18px">{{ post.body }}</p><br>
         <tags v-for="tag in post.tagList" :tagName="tag" :key="tag.id" style="float: none"></tags>
         <hr>
-        <ufa :page="false" :post="post"></ufa>
+        <ufa :page="false" :post="post" style="margin: 0 auto"></ufa>
         <div style="width: 40%; margin: 10px auto">
             <addcomm :id="id" v-on:addComment=getComm></addcomm>
             <comment v-for="comm in comments" :comm="comm" :key="comm.id" :id="id" v-on:updComm=getComm></comment>
