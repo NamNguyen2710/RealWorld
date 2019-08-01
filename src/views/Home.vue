@@ -2,9 +2,9 @@
     <div>
         <topbar :page="1"></topbar>
 		<h1 class="heading" style="font-size: 40px"><b>conduit</b></h1>
-		<h3 class="heading">A place to share your knowledge</h3>
+		<h3 id="top" class="heading">A place to share your knowledge</h3>
 		<br>
-		<table style="width: 77%; float: left;">
+		<table style="width: 77%; float: left; table-layout: fixed">
             <tr>
                 <td style="padding: 0">
                     <button v-if="logCheck" :class="{'inFeed': curFeed == 1}" @click="curPage = 1; curFeed = 1; getArticles()">My Feed</button>
@@ -13,16 +13,17 @@
                 </td>
             </tr>
             <tr v-for="article in articles" :key="article.id">
-                <td><artc :post="article"></artc></td>
+                <td><artc :artc="article" v-on:changeTag=createTag></artc></td>
             </tr>
             <tr v-if="articles.length === 0">
                 <td>No article is here... yet</td>
             </tr>
             <tr v-else>
                 <td class="margin-top: 10px">
-                    <button :class="{'inPage':(num + 1) === curPage}" class="page" v-for="num in pages" :key="num" @click="curPage = num + 1; getArticles()">
+                    <a href="#top" :class="{'inPage':(num + 1) === curPage}" class="page" 
+                        v-for="num in pages" :key="num" @click="curPage = num + 1; getArticles()">
                         {{ num + 1 }}
-                    </button>
+                    </a>
                 </td>
             </tr>
 		</table>
@@ -36,6 +37,7 @@
     import favtags from '../components/FavTags.vue';
     import axios from 'axios';
     import Cookies from 'js-cookie';
+    import router from '../router.js'
     import { authHeader} from '../authHeader.js';
 
     export default {
@@ -70,8 +72,8 @@
                 else
                     if (this.logCheck)
                         axios({url: 'http://localhost:3000/api/articles', method: 'get',
-                            params: { tag: value, limit: 10, offset: (this.curPage-1)*10,
-                            headers: authHeader() }})
+                            params: { tag: value, limit: 10, offset: (this.curPage-1)*10},
+                            headers: authHeader()})
                         .then(response => { 
                             this.articles = response.data.articles;
                             this.pages = [ ...Array(Math.ceil(response.data.articlesCount / 10)).keys() ];
@@ -88,6 +90,7 @@
             },
             createTag: function(value) {
                 this.curFeed = 3;
+                this.curPage = 1;
                 this.tagName = '#' + value;
                 this.getArticles(value);
             }
@@ -107,10 +110,8 @@
         text-align:center;
         background-color:rgb(118, 201, 118);
         color:white;
-        margin:0;
-        padding: 15px;
-        margin-left: -13%;
-        margin-right: -11.9%;
+        margin: 0 -12.5%;
+        padding-bottom: 15px;
         padding-top: 30px;
     }
     tr, td {
@@ -132,9 +133,13 @@
     }
 
     .page {
-        border: 1px solid rgb(190, 190, 190);
-        font-size: 14px;
-        padding: 13px;
+        border: 0.5px solid rgb(221, 221, 221);
+        font-size: 12px;
+        padding: 10px;
+        text-decoration: none;
+        background-color: white;
+        color: rgb(118, 201, 118);
+        margin-left: -2px;
     }
     .page:hover {
         background-color: rgb(221, 221, 221);
@@ -144,6 +149,5 @@
     .inPage {
         background: rgb(118, 201, 118) !important;
         color: white !important;
-        text-decoration: underline;
     }
 </style>

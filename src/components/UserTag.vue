@@ -1,7 +1,7 @@
 <template>
     <span>
         <router-link :to="`/account/${author.username}`" class="avatar">
-            <img ref="ava" :src="author.image" style="clip-path: circle();">
+            <img ref="ava" :src="author.image" style="clip-path: circle()">
         </router-link>
         <router-link :to="`/account/${author.username}`" style="text-decoration: none; color: white;" :class='{"name":page === false}'>
             {{ author.username }}
@@ -41,7 +41,8 @@
         display: inline-flex; 
         justify-content: center; 
         float: left; 
-        margin-right: 10px
+        margin-right: 10px;
+        z-index: 0;
     }
 
     .date {

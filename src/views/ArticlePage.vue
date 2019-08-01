@@ -3,6 +3,7 @@
         <topbar :page="0"></topbar>
         <div class="head">
             <h1 style="color: white; font-family: sans-serif">{{ post.title }}</h1>
+            <p style="color: rgb(235, 233, 233); font-size: 16px; margin: -10px 0 30px 30px">{{ post.description }}</p>
             <ufa :page="true" :post="post"></ufa>
         </div>
         <p style="padding: 20px; font-size: 18px">{{ post.body }}</p><br>
@@ -70,7 +71,7 @@
 <style scoped>
     .head {
         background: rgb(53, 53, 53); 
-        padding: 15px;
+        padding: 25px;
         margin-left: -13%;
         padding-left: 16%;
         margin-right: -11.5%;
@@ -83,5 +84,7 @@
         border-top: 1px solid rgb(201, 201, 201);
         margin: 1em 0;
         padding: 0; 
+        color: rgb(235, 233, 233)
     }
+    
 </style>

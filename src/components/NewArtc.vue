@@ -4,12 +4,12 @@
             <li v-for="error in errors" :key="error">{{ error }}</li>
         </ul>
         <form style="margin: 0 auto; width: 60%; margin-top: 40px" v-on:submit.prevent>
-            <input type="text" class="inputbox" style="height: 30px" placeholder="Article Title" v-model="title">
+            <input ref="first" type="text" class="inputbox" style="height: 30px" placeholder="Article Title" v-model="title">
             <input type="text" class="inputbox" placeholder="What's this article about?" v-model="descript">
             <textarea class="inputbox" style="height: 100px" placeholder="Write your article (in markdown)" v-model="content"></textarea>
             <input type="text" class="inputbox" placeholder="Enter tags" v-model="tag" v-on:keyup.enter="addTag()">
         </form>
-        <div style="width: 60%; margin: 0 auto">
+        <div style="width: 60%; margin: 0 auto" :key="upd">
             <tags v-for="t in taglist" :key="t.id" :tagName="t" style="float: none" v-on:changeTag=deleteTag></tags>
         </div>
         <div style="margin: 0 auto; width: 60%">
@@ -34,9 +34,10 @@
                 title: '',
                 descript: '',
                 content: '',
-                taglist: [],
+                taglist: new Set,
                 tag: '',
-                errors: []
+                errors: [],
+                upd: 1
             }
         },
         methods: {
@@ -48,7 +49,7 @@
                                 "title": this.title,
                                 "description": this.descript,
                                 "body": this.content,
-                                "tagList": this.taglist
+                                "tagList": Array.from(this.taglist)
                             }
                         }
                     })
@@ -65,13 +66,17 @@
                 }
             },
             addTag() {
-                this.taglist.push(this.tag);
+                this.taglist.add(this.tag);
+                this.upd = -this.upd;
                 this.tag = "";
             },
             deleteTag(value) {
-                var index = this.taglist.indexOf(value);
-                this.taglist.splice(index, 1);
+                this.taglist.delete(value);
+                this.upd = -this.upd;
             }
+        },
+        mounted() {    
+            this.$refs.first.focus()
         }
     }
 </script>

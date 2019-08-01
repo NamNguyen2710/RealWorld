@@ -3,16 +3,16 @@
         <ul class="error">
             <li v-for="error in errors" :key="error">{{ error }}</li>
         </ul>
-        <form style="margin: 30px auto; width: 60%" v-on:submit.prevent>
-            <input type="text" class="inputbox" style="height: 30px" placeholder="Article Title" v-model="title">
+        <form style="margin: 30px auto 0; width: 60%" v-on:submit.prevent>
+            <input ref="" type="text" class="inputbox" style="height: 30px" placeholder="Article Title" v-model="title">
             <input type="text" class="inputbox" placeholder="What's this article about?" v-model="descript">
             <textarea class="inputbox" style="height: 100px" placeholder="Write your article (in markdown)" v-model="content"></textarea>
-            <input type="text" class="inputbox" placeholder="Enter tags" v-model="tag" v-on:keyup.enter="addTag()">
-            <div style="width: 100%; margin: 0 auto">
-                <tags v-for="t in taglist" :key="t.id" :tagName="t" style="float:left"></tags>
-            </div>
+            <input type="text" class="inputbox" placeholder="Enter tags" v-model="tag" v-on:keyup.enter=addTag>
         </form>
         <div style="margin: 0 auto; width: 60%">
+            <div style="width: 100%; margin: 0 auto" :key="upd">
+                <tags v-for="t in taglist" :key="t.id" :tagName="t" style="float:none" v-on:changeTag=deleteTag></tags>
+            </div>
             <button @click="updArtc()">Publish Article</button>
         </div>
     </div>
@@ -37,7 +37,8 @@
                 taglist: [],
                 tag: '',
                 id: this.$route.params.id,
-                errors: []
+                errors: [],
+                upd: 1
             }
         },
         methods: {
@@ -48,7 +49,8 @@
                             "article": {
                                 "title": this.title,
                                 "description": this.descript,
-                                "body": this.content
+                                "body": this.content,
+                                "tagList": Array.from(this.taglist)
                             }
                         }
                     })
@@ -63,6 +65,14 @@
                     if (!this.descript) { this.errors.push("Description cannot be empty") }
                     if (!this.body) { this.errors.push("Body cannot be empty")}
                 }
+            },
+            addTag() {
+                this.taglist.add(this.tag);
+                this.tag = "";
+            },
+            deleteTag(value) {
+                this.taglist.delete(value);
+                this.upd = -this.upd;
             }
         },
         created() {
@@ -71,9 +81,12 @@
                     this.title = response.data.article.title;
                     this.descript =  response.data.article.description;
                     this.content = response.data.article.body;
-                    this.taglist = response.data.article.tagList;
+                    this.taglist = new Set(response.data.article.tagList);
                 })
                 .catch(e => this.error.push(e));
+        },
+        mounted() {    
+            this.$refs.first.focus()
         }
     }
 </script>

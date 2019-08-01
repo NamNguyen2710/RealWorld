@@ -7,7 +7,7 @@
         </tr>
         <tr>
             <td class="author">
-                <utag :post="comm" :page="false" ></utag>
+                <utag :author="comm.author" :page="false" :date="comm.createdAt"></utag>
                 <button v-if="checkLogin()" @click="deleteComm()">X</button>
             </td>
         </tr>

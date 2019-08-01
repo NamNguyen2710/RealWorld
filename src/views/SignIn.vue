@@ -7,7 +7,7 @@
             <li v-for="error in errors" :key="error"> {{error}} </li>
         </ul>
         <form style="text-align: center" v-on:submit.prevent>
-           <input type="email" class="inputbox" placeholder="Email" v-model="user"><br>
+           <input ref="first" type="email" class="inputbox" placeholder="Email" v-model="user"><br>
            <input type="password" class="inputbox" placeholder="Password" v-model="pass" v-on:keyup.enter="login()"><br>
            <button @click="login()">Sign in</button>
         </form>
@@ -46,12 +46,15 @@
                         Cookies.set('user', response.data.user);
                         router.push('/');
                     })
-                    .catch(e => this.error.push(e))
+                    .catch(e => console.log((e)))
                 else {
                     if (!this.user) this.errors.push("Email cannot be empty")
                     if (!this.pass) this.errors.push("Password cannot be empty")
                 }
             }
+        },
+        mounted() {    
+            this.$refs.first.focus()
         }
     }
 </script>

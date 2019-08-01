@@ -1,5 +1,5 @@
 <template>
-    <button :class="{'clickedButt':favored === true}" @click="favorited()">
+    <button :class="{'clickedButt':favored === true}" @click="favorited">
         {{ optText }}{{ numb }} <span class="heart" :class="{'clickHrt':favored === true}"></span>
     </button>
 </template>
@@ -29,12 +29,17 @@
         float: right;
         background:none;
     }
-    button:hover, .clickedButt {
+    .clickedButt {
         color: white;
         background-color: rgb(118, 201, 118);
     }
     button:hover .heart:before, button:hover .heart:after, .clickedButt .heart:after, .clickedButt .heart:before{
         background: white;
+    }
+    button:hover {
+        color: white;
+        background-color: rgb(99, 173, 99);
+        border-color: rgb(99, 173, 99);
     }
     
 
@@ -48,6 +53,7 @@
     }
     .heart:before, .heart:after {
         position: absolute;
+        z-index: 0;
         content: "";
         left: 6px;
         top: 0;

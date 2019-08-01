@@ -7,7 +7,7 @@
             <li v-for="error in errors" :key="error">{{ error }}</li>
         </ul>
         <form style="text-align: center" v-on:submit.prevent>
-            <input type="text" class="inputbox" placeholder="Username" v-model="user"><br>
+            <input ref="first" type="text" class="inputbox" placeholder="Username" v-model="user"><br>
             <input type="email" class="inputbox" placeholder="Email" v-model="email"><br>
             <input type="password" class="inputbox" placeholder="Password" v-model="pass"><br>
             <button @click="signUp()">Sign up</button>
@@ -57,6 +57,9 @@
                     if (this.user.length > 20) this.errors.push("Username cannot be over 20 characters")
                 }
             }
+        },
+        mounted() {    
+            this.$refs.first.focus()
         }
     }
 </script>

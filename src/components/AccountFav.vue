@@ -7,7 +7,7 @@
             </td>
         </tr>
         <tr v-for="article in articles" :key="article.id">
-            <td><artc :post="article"></artc></td>
+            <td><artc :artc="article"></artc></td>
         </tr>
     </table>
 </template>
@@ -15,6 +15,7 @@
 <script>
     import artc from '../components/Artc.vue';
     import axios from 'axios';
+    import { authHeader } from '../authHeader';
 
     export default {
         name: 'accountFav',
@@ -29,7 +30,7 @@
         },
         methods: {
             getArticles() {
-                axios.get(`http://localhost:3000/api/articles`, { params: { favorited: this.id }})
+                axios.get(`http://localhost:3000/api/articles`, { params: { favorited: this.id }, headers: authHeader()})
                     .then(response => { this.articles = response.data.articles })
                     .catch(e => { this.error.push(e) })
             }

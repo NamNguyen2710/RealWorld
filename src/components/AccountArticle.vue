@@ -7,7 +7,7 @@
             </td>
         </tr>
         <tr v-for="article in articles" :key="article.id">
-            <td><artc :post="article"></artc></td>
+            <td><artc :artc="article"></artc></td>
         </tr>
     </table>
 </template>

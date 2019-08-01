@@ -4,7 +4,7 @@
         <div class="head">
             <img ref="ava" :src="profile.image" style="clip-path: circle()">
             <h2 style="font-family: tahoma; margin: 0">{{ profile.username }}</h2>
-            <p style="font-size: 16px; color: rgb(160, 160, 160)">{{ profile.bio }}</p>
+            <p style="font-size: 16px; color: rgb(160, 160, 160); margin: 8px 0">{{ profile.bio }}</p>
             <router-link to="/settings" class="follow" v-if="checkLogin()">Edit Profile Settings</router-link>
             <button class="follow" v-else @click="follow">
                 <span v-if="!profile.following">+ Following </span>
@@ -54,11 +54,11 @@
             },
             follow() {
                 if (this.profile.following)
-                    axios({url: `http://localhost:3000/api/profiles/${this.id}/follow`, method: 'delete', headers: authHeader()})
+                    axios({url: `http://localhost:3000/api/profiles/${this.profile.username}/follow`, method: 'delete', headers: authHeader()})
                         .then(response => { this.profile = response.data.profile})
                         .catch(e => console.log(e))
                 else
-                    axios({url: `http://localhost:3000/api/profiles/${this.id}/follow`, method: 'post', headers: authHeader()})
+                    axios({url: `http://localhost:3000/api/profiles/${this.profile.username}/follow`, method: 'post', headers: authHeader()})
                         .then(response => { this.profile = response.data.profile})
                         .catch(e => console.log(e))
             }
@@ -103,7 +103,6 @@
         text-align: center; 
         background: rgb(238, 238, 238); 
         padding: 15px;
-        margin-left: -13%;
-        margin-right: -11.5%;
+        margin: 25px -12.5%;
     }
 </style>

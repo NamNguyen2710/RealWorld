@@ -6,7 +6,7 @@
             <li v-for="error in errors" :key="error">{{ error }}</li>
         </ul>
         <form style="margin: 30px auto; width: 40%" v-on:submit.prevent v-on:keyup.enter="updCurUser()">
-            <input type="text" class="inputbox" style="height: 30px" placeholder="URL of profile picture" v-model="image">
+            <input ref="first" type="text" class="inputbox" style="height: 30px" placeholder="URL of profile picture" v-model="image">
             <input type="text" class="inputbox" placeholder="Username" v-model="username">
             <textarea class="inputbox" style="height: 100px" placeholder="Short bio about you" v-model="bio"></textarea>
             <input type="email" class="inputbox" placeholder="Email" v-model="email">
@@ -77,6 +77,9 @@
                     this.image = user.image;
                 })
                 .catch(e => console.log(JSON.stringify(e)))
+        },
+        mounted() {    
+            this.$refs.first.focus()
         }
     }
 </script>
@@ -106,6 +109,9 @@
         display: block;
         position: relative;
         font-family: arial; 
+    }
+    .inputbox:focus {
+        outline-width: 10px;
     }
 
     .submit { 

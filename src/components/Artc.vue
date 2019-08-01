@@ -9,9 +9,8 @@
 		<br>
 		<router-link :to="`/article/${post.slug}`" style="color:rgb(155, 154, 154); font-size: 15px">
 			Read more...
-			<tags v-for="tag in post.tagList" :key="tag.id" :tagName="tag" ></tags>
 		</router-link>
-		
+		<tags v-for="tag in post.tagList" :key="tag.id" :tagName="tag" v-on:changeTag="returnTag"></tags>
 	</div>
 </template>
 
@@ -25,7 +24,12 @@
     export default {
 		name: 'artc',
 		props: { 
-			post: {} 
+			artc: {} 
+		},
+		data() {
+			return {
+				post: {}
+			}
 		},
 		components: {
 			like, 
@@ -42,6 +46,17 @@
 					axios({url: `http://localhost:3000/api/articles/${this.post.slug}/favorite`, method: 'post', headers: authHeader()})
 						.then(response => {this.post = response.data.article})
 						.catch(e => console.log(JSON.stringify(e)))
+			},
+			returnTag(value) {
+				this.$emit('changeTag', value);
+			}
+		},
+		beforeMount() {
+			this.post = this.artc
+		},
+		watch: {
+			artc: function(value) {
+				this.post = value
 			}
 		}
 	}

@@ -15,6 +15,7 @@ import userSet from './views/UserSetting.vue'
 Vue.use(Router)
 
 export default new Router({
+  mode: 'history',
   routes: [
     { path: '/', component: Home },
     { path: '/signin', component: Signin },

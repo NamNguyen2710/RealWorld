@@ -1,26 +1,28 @@
 <template>
-    <nav>
-        <ul class="component" style="background-color: white; list-style-type: none; overflow: hidden; margin: 0">
+    <nav style="background-color: white; position: fixed; width: 100%; left: 0; top: 0; z-index: 10">
+        <ul class="component" style="list-style-type: none; margin: 0 auto; width: 80%">
             <li style="float: left">
-                <router-link to="/" style="color: rgb(118, 201, 118); ">
-                    <b>conduit</b></router-link>
+                <a href="/" style="color: rgb(118, 201, 118); ">
+                    <b>conduit</b></a>
             </li>
             <template v-if="user">
-                <li><router-link :to="`/account/${JSON.parse(user).username}`" :class="{'black':page === 6}">{{ JSON.parse(user).username }}</router-link></li>
-                <li><router-link to="/settings" :class="{'black':page === 5}">Settings</router-link></li>
-                <li><router-link to="/editor" :class="{'black':page === 4}">New Article</router-link></li>
+                <li><a href="/" @click="logout">Log out</a></li>
+                <li><a :href="`/account/${JSON.parse(user).username}`" :class="{'black':page === 6}">{{ JSON.parse(user).username }}</a></li>
+                <li><a href="/settings" :class="{'black':page === 5}">Settings</a></li>
+                <li><a href="/editor" :class="{'black':page === 4}">New Article</a></li>
             </template>
             <template v-else>
-                <li><router-link to="/signup" :class="{'black':page === 3}">Sign up</router-link></li>
-                <li><router-link to="/signin" :class="{'black':page === 2}">Sign in</router-link></li>
+                <li><a href="/signup" :class="{'black':page === 3}">Sign up</a></li>
+                <li><a href="/signin" :class="{'black':page === 2}">Sign in</a></li>
             </template>
-            <li><router-link to="/" :class="{'black':page === 1}">Home</router-link></li>
+            <li><a href="/" :class="{'black':page === 1}">Home</a></li>
         </ul>
     </nav>
 </template>
 
 <script>
-    import Cookies from 'js-cookie'
+    import Cookies from 'js-cookie';
+    import router from '../router.js';
 
     export default {
         name: 'topbar',
@@ -30,6 +32,11 @@
         data() {
             return {
                 user: Cookies.get('user')
+            }
+        },
+        methods: {
+            logout(){
+                Cookies.remove('user')
             }
         }
     }
@@ -44,6 +51,7 @@
         display: block;
         text-decoration: none;
         font-family: tahoma;
+        font-weight:500;
     }
     .black { color: black }
 </style>

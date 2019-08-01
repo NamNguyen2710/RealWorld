@@ -1,7 +1,7 @@
 <template>
     <table>
         <tr>
-            <td rowspan="2" style="min-width: 150px">
+            <td rowspan="2" style="min-width: 170px">
                 <utag :author="post.author" :date="post.createdAt" :page="page"></utag>
             </td>
             <td><span v-if="checkLogin()">
@@ -28,7 +28,7 @@
     import router from '../router.js';
     import { authHeader } from '../authHeader.js';
     import Cookies from 'js-cookie';
-
+    
     export default {
         name: 'ufa',
         props: {
@@ -59,25 +59,26 @@
             favArtc(value) {
 				if (value)
 					axios({url: `http://localhost:3000/api/articles/${this.post.slug}/favorite`, method: 'delete', headers: authHeader()})
-						.then(response => {this.post = response.data.article})
+						.then( this.post.favorited = false, this.post.favoritesCount-- )
 						.catch(e => console.log(e))
 				else
 					axios({url: `http://localhost:3000/api/articles/${this.post.slug}/favorite`, method: 'post', headers: authHeader()})
-						.then(response => {this.post = response.data.article})
+						.then( this.post.favorited = true, this.post.favoritesCount++ )
 						.catch(e => console.log(JSON.stringify(e)))
 			},
             follow() {
                 if (this.post.author.following)
                     axios({url: `http://localhost:3000/api/profiles/${this.post.author.username}/follow`, method: 'delete', headers: authHeader()})
-                        .then(response => { this.post.author.following = false })
+                        .then( this.post.author.following = false )
                         .catch(e => console.log(JSON.stringify(e)))
                 else
                     axios({url: `http://localhost:3000/api/profiles/${this.post.author.username}/follow`, method: 'post', headers: authHeader()})
-                        .then(response => { this.post.author.following = true })
+                        .then( this.post.author.following = true )
                         .catch(e => console.log(e))
-            },
+            }
         }
     }
+    
 </script>
 
 <style scoped>
