@@ -29,7 +29,7 @@
         },
         methods: {
             postArticle() {
-                if (this.comment)
+                if ( authHeader() && this.comment)
                     axios({url: `http://localhost:3000/api/articles/${this.id}/comments`, method: 'post',
                             headers: authHeader(), data: { "comment": {"body": this.comment} }})
                         .then( response => {

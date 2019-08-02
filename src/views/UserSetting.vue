@@ -67,7 +67,7 @@
                 router.push('/');
             }
         },
-        created() {
+        mounted() {
             axios({url: 'http://localhost:3000/api/user', method: 'get', headers: authHeader()})
                 .then(response => { 
                     const user = response.data.user;
@@ -77,8 +77,7 @@
                     this.image = user.image;
                 })
                 .catch(e => console.log(JSON.stringify(e)))
-        },
-        mounted() {    
+            document.title = "Settings"
             this.$refs.first.focus()
         }
     }

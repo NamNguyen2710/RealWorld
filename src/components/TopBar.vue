@@ -22,7 +22,6 @@
 
 <script>
     import Cookies from 'js-cookie';
-    import router from '../router.js';
 
     export default {
         name: 'topbar',

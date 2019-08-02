@@ -75,7 +75,7 @@
                 this.upd = -this.upd;
             }
         },
-        created() {
+        mounted() {
             axios.get(`http://localhost:3000/api/articles/${this.id}`)
                 .then(response => { 
                     this.title = response.data.article.title;
@@ -84,8 +84,6 @@
                     this.taglist = new Set(response.data.article.tagList);
                 })
                 .catch(e => this.error.push(e));
-        },
-        mounted() {    
             this.$refs.first.focus()
         }
     }

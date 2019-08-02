@@ -51,17 +51,24 @@
                     .catch(e => this.error.push(e))
             },
             getArticle() {
-                if (this.logCheck)
+                if (this.logCheck){
+                    console.log("get article")
                     axios({url: `http://localhost:3000/api/articles/${this.id}`, method: 'get', headers: authHeader()})
-                        .then(response => { this.post = response.data.article })
-                        .catch(e => this.error.push(e))
-                else
+                        .then(response => { 
+                            this.post = response.data.article;
+                            document.title = this.post.title;
+                        })
+                        .catch(e => console.error(e))
+                } else
                     axios.get(`http://localhost:3000/api/articles/${this.id}`)
-                        .then(response => { this.post = response.data.article })
-                        .catch(e => this.error.push(e))
+                        .then(response => { 
+                            this.post = response.data.article;
+                            document.title = this.post.title;
+                        })
+                        .catch(e => console.error(e))
             }
         },
-        created() {
+        mounted() {
             this.getArticle()
             this.getComm()
         }

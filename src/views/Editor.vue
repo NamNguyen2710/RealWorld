@@ -13,6 +13,9 @@
         name: 'editor',
         components: {
             topbar
+        },
+        mounted() {
+            document.title = "Editor"
         }
     }
 </script>

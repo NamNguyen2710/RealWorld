@@ -60,6 +60,7 @@
         },
         mounted() {    
             this.$refs.first.focus()
+            document.title = "Sign Up"
         }
     }
 </script>

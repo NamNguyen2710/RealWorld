@@ -55,6 +55,7 @@
         },
         mounted() {    
             this.$refs.first.focus()
+            document.title = "Sign In"
         }
     }
 </script>

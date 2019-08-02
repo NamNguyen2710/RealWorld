@@ -1,5 +1,5 @@
 <template>
-    <table>
+    <table v-if="post.author">
         <tr>
             <td rowspan="2" style="min-width: 170px">
                 <utag :author="post.author" :date="post.createdAt" :page="page"></utag>
@@ -8,7 +8,7 @@
                     <router-link class="follow" :to="`/editor/${post.slug}`">Edit article</router-link>
                     <button class="delete" @click="deleteArtc">Delete article</button>
                 </span>
-                <span v-else >
+                <span v-else>
                     <button class="follow" @click="follow">
                         <span v-if="!post.author.following">+ Following </span>
                         <span v-else>+ Unfollowing </span>
@@ -52,29 +52,32 @@
                     return false
             },
             deleteArtc() {
-                axios({url: `http://localhost:3000/api/articles/${this.post.slug}`, method: 'delete', headers: authHeader()})
-                    .then( router.push('/') )
-                    .catch(e => console.log(e))
+                if (authHeader())
+                    axios({url: `http://localhost:3000/api/articles/${this.post.slug}`, method: 'delete', headers: authHeader()})
+                        .then( router.push('/') )
+                        .catch(e => console.log(e))
             },
             favArtc(value) {
-				if (value)
-					axios({url: `http://localhost:3000/api/articles/${this.post.slug}/favorite`, method: 'delete', headers: authHeader()})
-						.then( this.post.favorited = false, this.post.favoritesCount-- )
-						.catch(e => console.log(e))
-				else
-					axios({url: `http://localhost:3000/api/articles/${this.post.slug}/favorite`, method: 'post', headers: authHeader()})
-						.then( this.post.favorited = true, this.post.favoritesCount++ )
-						.catch(e => console.log(JSON.stringify(e)))
+                if (authHeader())
+                    if (value)
+                        axios({url: `http://localhost:3000/api/articles/${this.post.slug}/favorite`, method: 'delete', headers: authHeader()})
+                            .then( this.post.favorited = false, this.post.favoritesCount-- )
+                            .catch(e => console.log(e))
+                    else
+                        axios({url: `http://localhost:3000/api/articles/${this.post.slug}/favorite`, method: 'post', headers: authHeader()})
+                            .then( this.post.favorited = true, this.post.favoritesCount++ )
+                            .catch(e => console.log(JSON.stringify(e)))
 			},
             follow() {
-                if (this.post.author.following)
-                    axios({url: `http://localhost:3000/api/profiles/${this.post.author.username}/follow`, method: 'delete', headers: authHeader()})
-                        .then( this.post.author.following = false )
-                        .catch(e => console.log(JSON.stringify(e)))
-                else
-                    axios({url: `http://localhost:3000/api/profiles/${this.post.author.username}/follow`, method: 'post', headers: authHeader()})
-                        .then( this.post.author.following = true )
-                        .catch(e => console.log(e))
+                if (authHeader())
+                    if (this.post.author.following)
+                        axios({url: `http://localhost:3000/api/profiles/${this.post.author.username}/follow`, method: 'delete', headers: authHeader()})
+                            .then( this.post.author.following = false )
+                            .catch(e => console.log(JSON.stringify(e)))
+                    else
+                        axios({url: `http://localhost:3000/api/profiles/${this.post.author.username}/follow`, method: 'post', headers: authHeader()})
+                            .then( this.post.author.following = true )
+                            .catch(e => console.log(JSON.stringify(e)))
             }
         }
     }

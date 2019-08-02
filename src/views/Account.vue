@@ -35,15 +35,27 @@
                 logCheck: Cookies.get('user')
             }
         },
-        created() {
+        mounted() {
             if (this.logCheck)
                 axios({url: `http://localhost:3000/api/profiles/${this.id}`, method: 'get', headers: authHeader()})
-                    .then(response => { this.profile = response.data.profile })
+                    .then(response => { 
+                        this.profile = response.data.profile;
+                        document.title = "@" + this.profile.username; 
+                    })
                     .catch(e => { this.error.push(e) })
             else 
                 axios.get(`http://localhost:3000/api/profiles/${this.id}`)
-                    .then(response => { this.profile = response.data.profile })
-                    .catch(e => { this.error.push(e) })
+                    .then(response => { 
+                        this.profile = response.data.profile;
+                        document.title = "@" + this.profile.username; 
+                    })
+                    .catch(e => { this.error.push(e) });
+            this.$nextTick(function () {
+                if (this.$refs.ava.width >= this.$refs.ava.height)
+                    this.$refs.ava.style.height = '100px'
+                else
+                    this.$refs.ava.style.width = '100px'
+            });
         },
         methods: {
             checkLogin() {
@@ -53,23 +65,16 @@
                     return false
             },
             follow() {
-                if (this.profile.following)
-                    axios({url: `http://localhost:3000/api/profiles/${this.profile.username}/follow`, method: 'delete', headers: authHeader()})
-                        .then(response => { this.profile = response.data.profile})
-                        .catch(e => console.log(e))
-                else
-                    axios({url: `http://localhost:3000/api/profiles/${this.profile.username}/follow`, method: 'post', headers: authHeader()})
-                        .then(response => { this.profile = response.data.profile})
-                        .catch(e => console.log(e))
+                if (authHeader())
+                    if (this.profile.following)
+                        axios({url: `http://localhost:3000/api/profiles/${this.profile.username}/follow`, method: 'delete', headers: authHeader()})
+                            .then(response => { this.profile = response.data.profile })
+                            .catch(e => console.log(e))
+                    else
+                        axios({url: `http://localhost:3000/api/profiles/${this.profile.username}/follow`, method: 'post', headers: authHeader()})
+                            .then(response => { this.profile = response.data.profile })
+                            .catch(e => console.log(e))
             }
-        },
-        mounted () {
-            this.$nextTick(function () {
-                if (this.$refs.ava.width >= this.$refs.ava.height)
-                    this.$refs.ava.style.height = '100px'
-                else
-                    this.$refs.ava.style.width = '100px'
-            })
         },
         watch: {
             '$route' (to, from) {

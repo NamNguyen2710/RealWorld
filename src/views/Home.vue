@@ -37,7 +37,6 @@
     import favtags from '../components/FavTags.vue';
     import axios from 'axios';
     import Cookies from 'js-cookie';
-    import router from '../router.js'
     import { authHeader} from '../authHeader.js';
 
     export default {
@@ -95,11 +94,12 @@
                 this.getArticles(value);
             }
         },
-        created() {
+        mounted() {
             this.getArticles(),
             axios.get('http://localhost:3000/api/tags')
                 .then(response => { this.favtagslist = response.data.tags })
                 .catch(e => { this.error.push(e) })
+            document.title = "Home"
         }
     }
 </script>
