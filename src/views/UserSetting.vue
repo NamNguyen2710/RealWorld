@@ -1,25 +1,42 @@
-<template>
-    <div>
-        <topbar :page="5"></topbar>
-        <h1 class="heading">Your Settings</h1>
-        <ul class="error">
-            <li v-for="error in errors" :key="error">{{ error }}</li>
-        </ul>
-        <form style="margin: 30px auto; width: 40%" v-on:submit.prevent v-on:keyup.enter="updCurUser()">
-            <input ref="first" type="text" class="inputbox" style="height: 30px" placeholder="URL of profile picture" v-model="image">
-            <input type="text" class="inputbox" placeholder="Username" v-model="username">
-            <textarea class="inputbox" style="height: 100px" placeholder="Short bio about you" v-model="bio"></textarea>
-            <input type="email" class="inputbox" placeholder="Email" v-model="email">
-            <input type="password" class="inputbox" placeholder="New Password" v-model="pass">
-            <button class="submit" @click="updCurUser()">Update Settings</button>
-            <hr style="clear: both; width: 80%; margin: 0 auto">
-            <button class="logout" @click="logout()">Or click here to log out</button>
-        </form>
-    </div>
+<template lang="pug">
+    .container
+        .col-md-6(class="col-sm-12 offset-md-3" style="text-align:center")
+            h1 Your settings
+            ul.text-danger(style="text-align: left; margin: 5px")
+                li(v-for="error in errors" :key="error") {{error}}
+            form(
+                method="post" @submit.prevent="updCurUser" 
+                style="margin: 30px 0; border-bottom: 1px solid rgb(201, 201, 201)"
+            )
+                .form-group
+                    input.form-control(
+                        type="text" placeholder="URL of profile picture" 
+                        v-model="image")
+                .form-group
+                    input.form-control(
+                        type="text" class="form-control-lg" 
+                        placeholder="Username" v-model="username")
+                .form-group
+                    textarea.form-control(
+                        type="password" class="form-control-lg"
+                        placeholder="Short bio about you" v-model="bio")
+                .form-group
+                    input.form-control(
+                        type="email" class="form-control-lg" 
+                        placeholder="Email" v-model="email")            
+                .form-group
+                    input.form-control(
+                        type="password" class="form-control-lg" 
+                        placeholder="Password" v-model="pass")
+                button.btn(
+                    type="submit" class="btn-success float-right" 
+                    style="margin-bottom: 15px"
+                ) Update settings
+                div(style="clear: both")
+            button.btn(class="logout float-left" @click="logout") Or click here to log out
 </template>
 
 <script>
-    import topbar from '../components/TopBar.vue';
     import axios from 'axios';
     import { authHeader } from '../authHeader';
     import Cookies from 'js-cookie';
@@ -27,9 +44,6 @@
 
     export default {
         name: 'setting',
-        components: {
-            topbar
-        },
         data() {
             return {
                 email: "",
@@ -78,64 +92,7 @@
                 })
                 .catch(e => console.log(JSON.stringify(e)))
             document.title = "Settings"
-            this.$refs.first.focus()
+            // this.$refs.first.focus()
         }
     }
 </script>
-
-<style scoped>
-    .heading {
-        font-size: 40px;
-        font-family: tahoma; 
-        text-align: center; 
-        margin: 20px;
-        font-weight: normal;
-    }
-
-    .error {
-        color: rgb(167, 45, 45);
-        font-family: Verdana, Geneva, Tahoma, sans-serif;
-        margin: 10px auto;
-        width: 400px;
-    }
-
-    .inputbox {
-        width: 95%;
-        margin: 8px;
-        padding: 10px;
-        border: 1px solid rgb(189, 188, 188);
-        border-radius: 4px;
-        display: block;
-        position: relative;
-        font-family: arial; 
-    }
-    .inputbox:focus {
-        outline-width: 10px;
-    }
-
-    .submit { 
-        padding: 15px;
-        float: right;
-        background: rgb(118, 201, 118);
-        color: white; 
-        border-radius: 7px; 
-        border: hidden;
-        margin-bottom: 10px;
-    }
-    .submit:hover {
-        background-color: rgb(83, 168, 83);
-    }
-
-    .logout {
-        padding: 7px 10px;
-        background: none;
-        color: rgb(179, 91, 91); 
-        border-radius: 7px; 
-        border: 1px solid rgb(179, 91, 91);
-        margin: 20px;
-    }
-    .logout:hover {
-        background-color: rgb(179, 91, 91);
-        color: white;
-    }
-</style>

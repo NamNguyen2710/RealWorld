@@ -17,7 +17,7 @@ Vue.use(Router)
 export default new Router({
   mode: 'history',
   routes: [
-    { path: '/', component: Home },
+    { path: '/', component: Home},
     { path: '/signin', component: Signin },
     { path: '/signup', component: Signup },
     { path: '/article/:id', component: artcPage },
@@ -34,5 +34,12 @@ export default new Router({
       ]
     },
     { path: '/settings', component: userSet}
-  ]
+  ],
+  scrollBehavior: function (to) {
+    if (to.hash) {
+      return {
+        selector: to.hash
+      }
+    }
+  }
 })

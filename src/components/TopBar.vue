@@ -1,23 +1,30 @@
-<template>
-    <nav style="background-color: white; position: fixed; width: 100%; left: 0; top: 0; z-index: 10">
-        <ul class="component" style="list-style-type: none; margin: 0 auto; width: 80%">
-            <li style="float: left">
-                <a href="/" style="color: rgb(118, 201, 118); ">
-                    <b>conduit</b></a>
-            </li>
-            <template v-if="user">
-                <li><a href="/" @click="logout">Log out</a></li>
-                <li><a :href="`/account/${JSON.parse(user).username}`" :class="{'black':page === 6}">{{ JSON.parse(user).username }}</a></li>
-                <li><a href="/settings" :class="{'black':page === 5}">Settings</a></li>
-                <li><a href="/editor" :class="{'black':page === 4}">New Article</a></li>
-            </template>
-            <template v-else>
-                <li><a href="/signup" :class="{'black':page === 3}">Sign up</a></li>
-                <li><a href="/signin" :class="{'black':page === 2}">Sign in</a></li>
-            </template>
-            <li><a href="/" :class="{'black':page === 1}">Home</a></li>
-        </ul>
-    </nav>
+<template lang="pug">
+    nav.navbar(class="navbar-expand-md navbar-light bg-white fixed-top")
+        .container
+            router-link.navbar-brand(to="/") conduit
+            button.navbar-toggler(type="button" data-toggle="collapse" data-target="#menu" aria-controls="menu" aria-expended="false")
+                span.navbar-toggler-icon
+            .collapse(class="navbar-collapse" id="menu" :key="user")
+                ul.nav(v-if="user" class="navbar-nav")
+                    li.nav-item
+                        router-link.nav-link(active-class="active" to="/" exact) Home
+                    li.nav-item
+                        router-link.nav-link(active-class="active" to="/editor" exact) 
+                            i.fas(class="fa-edit")
+                            span  New article
+                    li.nav-item
+                        router-link.nav-link(active-class="active" to="/settings" exact) 
+                            i.fas(class="fa-cog")
+                            span  Setting
+                    li.nav-item
+                        router-link.nav-link(active-class="active" :to="`/account/${JSON.parse(user).username}`") {{JSON.parse(user).username}}
+                ul.nav(v-else class="navbar-nav")
+                    li.nav-item
+                        router-link.nav-link(active-class="active" to="/" exact) Home
+                    li.nav-item
+                        router-link.nav-link(active-class="active" to="/signin" exact) Sign in
+                    li.nav-item
+                        router-link.nav-link(active-class="active" to="/signup" exact) Sign up
 </template>
 
 <script>
@@ -37,20 +44,11 @@
             logout(){
                 Cookies.remove('user')
             }
+        },
+        watch: {
+            '$route' () {
+                this.user = Cookies.get('user')
+            }
         }
     }
 </script>
-    
-<style scoped>
-    li { float: right }
-    li a {
-        color: rgb(200, 200, 200);
-        text-align: center;
-        padding: 10px;
-        display: block;
-        text-decoration: none;
-        font-family: tahoma;
-        font-weight:500;
-    }
-    .black { color: black }
-</style>

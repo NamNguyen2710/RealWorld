@@ -1,7 +1,9 @@
-<template>
-    <button :class="{'clickedButt':favored === true}" @click="favorited">
-        {{ optText }}{{ numb }} <span class="heart" :class="{'clickHrt':favored === true}"></span>
-    </button>
+<template lang="pug">
+    button.btn(
+        class="artcBtn" @click="favorited" 
+        :class="favored? 'liked' : 'like'"
+    ) {{optText}}{{numb}} 
+        span.heart
 </template>
 
 <script>
@@ -21,35 +23,16 @@
 </script>
 
 <style scoped>
-    button { 
-        border-radius: 3px;
-        padding: 4px 8px 1px 8px;
-        border: 1px solid rgb(118, 201, 118);
-        color:rgb(118, 201, 118);
-        float: right;
-        background:none;
-    }
-    .clickedButt {
-        color: white;
-        background-color: rgb(118, 201, 118);
-    }
-    button:hover .heart:before, button:hover .heart:after, .clickedButt .heart:after, .clickedButt .heart:before{
+    .like:hover .heart:before, .like:hover .heart:after, .liked .heart:after, .liked .heart:before{
         background: white;
     }
-    button:hover {
-        color: white;
-        background-color: rgb(99, 173, 99);
-        border-color: rgb(99, 173, 99);
-    }
     
-
     .heart {
         position: relative;
         width: 10px;
         height: 10px;
         float: right;
-        margin: 4px;
-        top: -2.5px;
+        margin: 1px 3px;
     }
     .heart:before, .heart:after {
         position: absolute;

@@ -1,23 +1,26 @@
-<template>
-	<div>
-		<like :numb="post.favoritesCount" :favored="post.favorited" v-on:favorited=updArtc></like>
-		<utag :author="post.author" :date="post.createdAt" :page="false"></utag>
-
-		<h3 style="margin-bottom: 0; font-family: sans-serif">{{ post.title }}</h3>
-		<p style="margin: 0; color:gray">{{ post.description }}</p>
-
-		<br>
-		<router-link :to="`/article/${post.slug}`" style="color:rgb(155, 154, 154); font-size: 15px">
-			Read more...
-		</router-link>
-		<tags v-for="tag in post.tagList" :key="tag.id" :tagName="tag" v-on:changeTag="returnTag"></tags>
-	</div>
+<template lang="pug">
+	.article(v-if="post.author")
+		.container
+			.row
+				.col-10
+					router-link(:to="`/account/${post.author.username}`" class="avatar")
+						img(ref="ava" :src="post.author.image" style="clip-path: circle()")
+					router-link.text-success(:to="`/account/${post.author.username}`") {{post.author.username}}
+					p {{getDate(post.createdAt)}}
+				.col-2
+					like(:numb="post.favoritesCount" :favored="post.favorited" v-on:favorited="updArtc")
+				h3.col-12 {{post.title}}
+				p.col-12 {{post.description}}
+				router-link.col-3(:to="`/article/${post.slug}`" class="text-success") Read more...
+				.col-9(style="display:flex; justify-content: flex-end")
+					button.badge(
+						v-for="tag in post.tagList" :key="tag"
+						class="badge-pill badge-secondary" @click="returnTag(tag)"
+					) {{tag}}
 </template>
 
 <script>
 	import like from "./Like.vue";
-	import tags from './Tags.vue';
-	import utag from "./UserTag.vue";
 	import axios from 'axios';
 	import { authHeader } from '../authHeader';
 
@@ -31,11 +34,7 @@
 				post: {}
 			}
 		},
-		components: {
-			like, 
-			tags,
-			utag
-		},
+		components: { like },
 		methods: {
 			updArtc(value) {
 				if (authHeader())
@@ -50,13 +49,22 @@
 			},
 			returnTag(value) {
 				this.$emit('changeTag', value);
+			},
+			getDate(date) {
+				return new Date(date).toDateString()
 			}
 		},
-		beforeMount() {
-			this.post = this.artc
+		mounted() {
+			this.post=this.artc
+			this.$nextTick(function () {
+                if (this.$refs.ava.width >= this.$refs.ava.height)
+                    this.$refs.ava.style.height = '35px'
+                else
+                    this.$refs.ava.style.width = '35px'
+            })
 		},
 		watch: {
-			artc: function(value) {
+			artc(value) {
 				this.post = value
 			}
 		}

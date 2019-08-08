@@ -1,20 +1,15 @@
-<template>
-    <div>
-        <topbar :page="6"></topbar>
-        <div class="head">
-            <img ref="ava" :src="profile.image" style="clip-path: circle()">
-            <h2 style="font-family: tahoma; margin: 0">{{ profile.username }}</h2>
-            <p style="font-size: 16px; color: rgb(160, 160, 160); margin: 8px 0">{{ profile.bio }}</p>
-            <router-link to="/settings" class="follow" v-if="checkLogin()">Edit Profile Settings</router-link>
-            <button class="follow" v-else @click="follow">
-                <span v-if="!profile.following">+ Following </span>
-                <span v-else>+ Unfollowing </span>
-                {{ profile.username }}
-            </button>
-            <br><br>
-        </div>
-        <router-view></router-view>
-    </div>
+<template lang="pug">
+    div(v-if="profile")
+        .jumbotron(class="jumbotron-fluid bg-light" style="padding-bottom: 40px")
+            .container
+                .row.justify-content-center
+                    img(ref="ava" :src="profile.image" style="clip-path: circle()"
+                        :style="checkSize? 'width: 100px' : 'height: 100px'")
+                    h4.col-12(class="text-center font-weight-bold") {{profile.username}}
+                    p.text-muted {{profile.bio}}
+                .row.justify-content-end
+                    router-link.btn(class="artcBtn follow" to="/settings" v-if="checkLogin()") Edit profile settings
+        router-view
 </template>
 
 <script>
@@ -32,7 +27,7 @@
             return {
                 profile: {},
                 id: this.$route.params.id,
-                logCheck: Cookies.get('user')
+                logCheck: Cookies.getJSON('user')
             }
         },
         mounted() {
@@ -49,20 +44,11 @@
                         this.profile = response.data.profile;
                         document.title = "@" + this.profile.username; 
                     })
-                    .catch(e => { this.error.push(e) });
-            this.$nextTick(function () {
-                if (this.$refs.ava.width >= this.$refs.ava.height)
-                    this.$refs.ava.style.height = '100px'
-                else
-                    this.$refs.ava.style.width = '100px'
-            });
+                    .catch(e => { this.error.push(e) })
         },
         methods: {
             checkLogin() {
-                if (this.logCheck && this.profile.username == JSON.parse(this.logCheck).username)
-                    return true
-                else
-                    return false
+                return (this.logCheck !== undefined && this.profile.username == this.logCheck.username)
             },
             follow() {
                 if (authHeader())
@@ -76,6 +62,13 @@
                             .catch(e => console.log(e))
             }
         },
+        computed: {
+            checkSize() {
+                let ava = new Image();
+                ava.src = this.profile.image;
+                return ava.width > ava.height
+            }
+        },
         watch: {
             '$route' (to, from) {
                 axios.get(`http://localhost:3000/api/profiles/${to.params.id}`, { headers: authHeader()})
@@ -87,7 +80,7 @@
 </script>
 
 <style scoped>
-    .follow {
+    /* .follow {
         padding: 5px; 
         border-radius:3px;
         size: 20px;
@@ -99,10 +92,10 @@
         font-size: 14px;
         font-family: Arial, Helvetica, sans-serif;
         text-decoration: none;
-    }
+    }*/
     .follow:hover {
         background: rgb(201, 201, 201)
-    }
+    } 
 
     .head {
         text-align: center; 
